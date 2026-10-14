@@ -1,0 +1,1769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Net Ripper</title>
+<meta name="description" content="Rip, cut and burn paper, cloth, rubber, steel, Kevlar, rope and nets with 22 tools.">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;800&display=swap" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;800&display=swap"></noscript>
+<style>
+:root{--bg:#0a1d24;--bg2:#0d262e;--panel:#12303a;--panel2:#18404c;--line:#265562;--ink:#f3e9d2;--dim:#8fb0b6;--hot:#ff5a36;--hot2:#ff8a4c;--ok:#3ec46d;--warn:#e8b339;--bad:#e5533d;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:dark}
+*,*::before,*::after{box-sizing:inherit}
+html,body{height:100%;margin:0}
+body{background:radial-gradient(120% 80% at 50% -10%,#14363f 0%,var(--bg) 60%);color:var(--ink);font-family:"Bricolage Grotesque",system-ui,sans-serif;display:flex;flex-direction:column;overflow:hidden;touch-action:none;-webkit-tap-highlight-color:transparent}
+::-webkit-scrollbar{height:6px;width:6px}::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+header{display:flex;align-items:center;gap:14px;padding:8px 14px 6px;background:linear-gradient(var(--panel),var(--bg2));border-bottom:1px solid var(--line)}
+.big{font-size:24px;font-weight:800;line-height:1;min-width:48px;height:46px;display:grid;place-items:center;border-radius:14px;background:linear-gradient(145deg,var(--hot2),#c93a1c);color:#fff;box-shadow:0 4px 14px rgba(255,90,54,.35),inset 0 1px 0 rgba(255,255,255,.3)}
+.ctl{flex:1;min-width:0}
+.ctl label{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:24px;background:transparent;accent-color:var(--hot)}
+input[type=range]::-webkit-slider-runnable-track{height:6px;border-radius:3px;background:#0b2229;box-shadow:inset 0 0 0 1px var(--line)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;margin-top:-7px;background:linear-gradient(var(--hot2),var(--hot));border:2px solid var(--ink);box-shadow:0 2px 6px rgba(0,0,0,.5)}
+input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:#0b2229}
+input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--hot);border:2px solid var(--ink)}
+button{font:inherit;font-weight:700;background:var(--ink);color:var(--bg);border:0;border-radius:10px;padding:6px 14px;cursor:pointer;transition:transform .08s,filter .15s,background .15s}
+button:active{transform:scale(.96)}
+button:hover{filter:brightness(1.08)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--hot);outline-offset:2px}
+button:disabled{opacity:.4;cursor:default}
+#rs{background:linear-gradient(var(--hot2),var(--hot));color:#fff;box-shadow:0 3px 10px rgba(255,90,54,.3)}
+.th{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--dim)}
+.th button{padding:0 12px;font-size:18px;line-height:1.3;background:var(--panel2);color:var(--ink);border:1px solid var(--line)}
+#mats,#tools{display:flex;gap:6px;padding:4px 12px;overflow-x:auto;background:var(--bg2);scrollbar-width:thin;-webkit-overflow-scrolling:touch}
+#tools{border-top:1px solid var(--line)}
+#mats button,#tools button{flex:none;display:inline-flex;align-items:center;gap:6px;background:var(--panel);color:var(--dim);border:1px solid var(--line);padding:4px 11px;font-size:13px;border-radius:999px}
+#mats button.on,#tools button.on{background:var(--ink);color:var(--bg);border-color:var(--ink);box-shadow:0 2px 10px rgba(243,233,210,.2)}
+.sw{width:11px;height:11px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(255,255,255,.35)}
+#tools button::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--kc,#8fb0b6)}
+#tools button[data-k=cut]{--kc:#7fd1ff}#tools button[data-k=grab],#tools button[data-k=push]{--kc:#9be37a}#tools button[data-k=hit]{--kc:#ffb347}
+#tools button[data-k=torch],#tools button[data-k=weld],#tools button[data-k=rod]{--kc:#ff6a3d}#tools button[data-k=acid]{--kc:#b7f03c}
+#tools button[data-k=magnet],#tools button[data-k=freeze],#tools button[data-k=patch]{--kc:#c79cff}
+#tset,#opts{display:flex;flex-wrap:wrap;gap:6px 8px;padding:6px 12px;background:var(--bg2);border-top:1px solid var(--line);font-size:12px;color:var(--dim);align-items:center}
+#tset label,#opts label{display:inline-flex;align-items:center;gap:6px;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:2px 10px}
+#tset select,#opts select{background:transparent;color:var(--ink);border:0;font:inherit;font-weight:700;padding:3px 2px;max-width:150px}
+#tset select option,#opts select option{background:var(--bg2);color:var(--ink)}
+#tset input[type=range]{width:90px;vertical-align:middle}
+#tset b{color:var(--ink)}
+#tset button,#opts button{padding:3px 12px;font-size:12px;background:var(--panel2);color:var(--ink);border:1px solid var(--line)}
+#tset #ts-live{flex:1 1 100%;white-space:normal;line-height:1.4;height:3.9em;overflow-y:auto;padding:6px 10px;border-left:3px solid var(--hot);background:rgba(255,90,54,.07);border-radius:0 8px 8px 0;color:var(--ink)}
+#opts #tinfo{color:var(--ink);font-weight:600}
+.qb{display:inline-block;width:60px;height:8px;background:#0b2229;border-radius:4px;overflow:hidden;vertical-align:middle;margin-right:6px;box-shadow:inset 0 0 0 1px var(--line)}.qb b{display:block;height:100%}
+#stage{flex:1;position:relative;min-height:180px;margin:6px 8px;border-radius:14px;overflow:hidden;border:1px solid var(--line);box-shadow:inset 0 0 40px rgba(0,0,0,.45),0 6px 20px rgba(0,0,0,.35);background:#071820}
+canvas{position:absolute;top:0;right:0;bottom:0;left:0;width:100%;height:100%;cursor:grab}
+#msg{position:absolute;left:50%;transform:translateX(-50%);top:28px;max-width:92%;text-align:center;font-size:16px;font-weight:800;padding:6px 14px;border-radius:14px;background:rgba(7,24,29,.82);border:1px solid var(--line);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);pointer-events:none;opacity:0;transition:opacity .25s}
+.stats{display:flex;align-items:center;gap:8px;padding:4px 12px 8px;font-size:13px;color:var(--dim);background:linear-gradient(var(--bg2),var(--panel))}
+.st{flex:1;min-width:0;display:grid;gap:4px}
+.st .row{display:flex;justify-content:space-between;gap:8px}
+#pbar{height:6px;border-radius:3px;background:#0b2229;overflow:hidden;box-shadow:inset 0 0 0 1px var(--line)}
+#pfill{display:block;height:100%;width:100%;background:linear-gradient(90deg,var(--ok),#9be37a);transition:width .2s}
+#tmp{color:var(--hot2);font-weight:800;white-space:nowrap}
+.stats{height:50px}.stats button{white-space:nowrap}.st span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#opts{flex-wrap:nowrap;overflow-x:auto;white-space:nowrap}#opts>*{flex:none}
+#sfbtn{background:var(--panel2);color:var(--ink);border:1px solid var(--line)}
+#safety,#inj{position:fixed;top:0;right:0;bottom:0;left:0;z-index:20;background:rgba(4,14,18,.88);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);overflow:auto;display:flex;align-items:flex-start;justify-content:center;padding:12px}
+#safety[hidden],#inj[hidden]{display:none}
+.sf-card{width:100%;max-width:780px;background:linear-gradient(var(--panel),var(--bg2));border:1px solid var(--line);border-radius:18px;padding:14px;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+.sf-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:20px}
+.sf-body{display:flex;gap:16px;flex-wrap:wrap}
+.sf-fig{flex:0 0 200px;text-align:center;background:radial-gradient(circle at 50% 30%,#1c4552,#0b2229);border:1px solid var(--line);border-radius:14px;padding:8px}
+.sf-gen{display:flex;gap:6px;justify-content:center;margin-top:6px}
+.sf-gen button.on,#sf-gear button.on{background:var(--ink);color:var(--bg)}
+.sf-side{flex:1;min-width:240px}
+#sf-gear{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+#sf-gear button,.sf-gen button{background:var(--panel);color:var(--dim);border:1px solid var(--line);padding:3px 10px;font-size:13px;border-radius:999px}
+.sf-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:10px 0;font-size:14px}
+.sf-row button{background:var(--panel2);color:var(--ink);border:1px solid var(--line);font-size:13px}
+.sf-row #sf-auto{background:linear-gradient(var(--hot2),var(--hot));color:#fff;border:0}
+.sf-note{font-size:12px;color:var(--dim);margin:6px 0}
+#sf-rec{font-size:13px;color:var(--dim)}
+#sf-rec b{color:var(--ink)}
+.ok{color:#3ec46d}.no{color:#e5533d}
+.sfv{display:flex;align-items:center;gap:8px;font-size:13px;margin:3px 0}
+.sfv span{width:64px}.sfv u{flex:1;height:10px;background:#0b2229;border-radius:5px;overflow:hidden;text-decoration:none;box-shadow:inset 0 0 0 1px var(--line)}.sfv i{display:block;height:100%;border-radius:5px;transition:width .2s}
+.sf-slot{display:flex;flex-wrap:wrap;gap:4px;align-items:center;margin:4px 0}
+.sf-slot span{width:50px;font-size:12px;color:var(--dim)}
+.sf-slot button{background:var(--panel);color:var(--dim);border:1px solid var(--line);padding:3px 10px;font-size:12px;border-radius:999px}
+.sf-slot button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+#sf-dose,#sf-log,#sf-brief,#sf-req{font-size:12px;color:var(--dim);margin:6px 0}
+#sf-ctl{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;margin:6px 0}
+#sf-ctl input{width:110px;vertical-align:middle}
+.gear{opacity:0;transform:translateY(-12px) scale(.96);transform-origin:100px 180px;transition:opacity .35s,transform .35s}
+.gear.on{opacity:1;transform:none}
+.gear.pop{animation:gpop .5s}
+@keyframes gpop{0%{transform:scale(1.18)}100%{transform:scale(1)}}
+#vit{position:absolute;top:8px;left:8px;display:flex;gap:4px;pointer-events:none;opacity:.9;flex-wrap:wrap;max-width:70%}
+.vb{width:32px;height:14px;background:rgba(7,24,29,.75);border:1px solid rgba(255,255,255,.08);border-radius:7px;position:relative;overflow:hidden;font-size:9px;color:#fff;line-height:13px}
+.vb span{position:absolute;left:5px;z-index:1}.vb i{position:absolute;left:0;top:0;bottom:0;opacity:.55}
+.inj-card{max-width:440px;margin-top:10vh;background:linear-gradient(var(--panel),var(--bg2));padding:20px;border-radius:16px;border:1px solid #7a2a20;box-shadow:0 20px 60px rgba(0,0,0,.6),0 0 0 4px rgba(229,83,61,.15)}
+.inj-card h2{margin:0 0 8px;color:#ff8a7a}
+</style>
+</head>
+<body>
+<div id="err" style="display:none;position:fixed;left:8px;right:8px;top:8px;z-index:99;background:#7a2a20;color:#fff;font:13px system-ui,sans-serif;padding:8px 12px;border-radius:10px"></div>
+<script>window.addEventListener('error',function(e){var d=document.getElementById('err');if(d){d.style.display='block';d.textContent='Something broke: '+(e.message||'unknown error')+(e.lineno?' (line '+e.lineno+')':'')}});</script>
+<header>
+  <div class="big" id="lvl">10</div>
+  <div class="ctl"><label for="s">Net strength (1 – 100)</label><input id="s" type="range" min="1" max="100" value="10"><div class="th"><span id="thl"></span><button id="thm" aria-label="Thinner">−</button><button id="thp" aria-label="Thicker">+</button></div></div>
+</header>
+<div id="mats"></div>
+<div id="tools"></div>
+<div id="tset" style="display:none"></div>
+<div id="opts"><label>Coat <select id="coat"><option>None</option><option>Paper</option><option>Cotton</option><option>Rubber</option><option>Kevlar</option><option>Steel</option></select></label><label>Mount <select id="mnt"><option>Frame</option><option>Curtain</option><option>Corners</option></select></label><label>Wind <select id="wnd"><option>Off</option><option>Breeze</option><option>Gale</option></select></label><span id="tinfo"></span><button id="upb"></button><button id="shp"></button></div>
+<div id="stage"><canvas id="c"></canvas><div id="msg"></div><div id="vit"></div></div>
+<div class="stats"><div class="st"><div class="row"><span id="rip">Strands ripped: 0</span><span id="pct">Net intact: 100%</span></div><div id="pbar"><i id="pfill"></i></div></div><span id="tmp"></span><button id="sfbtn">Safety</button><button id="rs">New net</button></div>
+<div id="safety" hidden><div class="sf-card">
+<div class="sf-head"><b>Safety equipment</b><button id="sfx">Close</button></div>
+<div class="sf-body">
+<div class="sf-fig"><div id="avatar"></div><div class="sf-gen"><button id="gm" class="on">Male</button><button id="gf">Female</button></div></div>
+<div class="sf-side"><div id="sf-vit"></div><div id="sf-dose"></div>
+<div id="sf-slots"></div>
+<div id="sf-ctl"><label>Helmet shade <input type="range" id="shade" min="5" max="13" value="10"> <b id="shv">10</b></label> <label>Arc current <input type="range" id="amps" min="20" max="300" value="120"> <b id="ampv">120 A</b></label></div>
+<div id="sf-req"></div><div id="sf-rec"></div><div id="sf-brief"></div>
+<div class="sf-row"><label><input type="checkbox" id="hazon" checked> Hazards on</label><button id="sf-auto">Equip recommended</button><button id="sf-aid">First aid</button><button id="sf-rest">Rest eyes</button><button id="sf-day">Next day</button></div>
+<div id="sf-log"></div>
+<p class="sf-note">Based on OSHA/ANSI Z49.1 shade guidance, ANSI Z87.1 eyewear, NIOSH 85 dBA noise criteria, ANSI/ISEA 105 cut levels, NIOSH respirator filters, NFPA 2112 FR clothing, ASTM F2413 boots, plus FR head covers, PAPR hoods, heavy gauntlets and leather spats for molten metal. Arc eye heals in a day or two; chip, chemical and laser eye damage and noise-induced hearing loss are permanent.</p></div>
+</div></div></div>
+<div id="inj" hidden><div class="inj-card"><h2 id="inj-t"></h2><p id="inj-p"></p><p id="inj-g"></p><button id="inj-b">Restart session</button></div></div>
+<script>
+const cv=document.getElementById('c'),ctx=cv.getContext('2d');
+const sl=document.getElementById('s'),lvl=document.getElementById('lvl'),msg=document.getElementById('msg'),pfEl=document.getElementById('pfill');
+let W,H,dpr,nodes=[],links=[],cols=16,rows=11,cs=15,drag=null,ptr={x:0,y:0},ripped=0,mt;
+const S=()=>+sl.value;
+const MATS=[
+ {n:'Paper',ex:6e-5,dg:120,bt:.1,fat:.96,th0:.1,thr:[.03,2],ig:230,tm:600,cd:.05,hc:2.2,rg:.9,mt:0,si:.25,sh:0,bp:.6,wv:.1,sheet:true,lb:'Paper sheet',pc:'240,232,210',tf:900,tt:'triangle',c0:4,c1:4,a0:1,tx:'p',pal:[[196,186,160],[236,229,210],[255,252,242]],h:.6,fl:1,sf:0,ac:.6,t:'tears in straight lines along the grain',m:.4,w:.7,d:.97,s:1,v:.3,c:[238,232,214],ko:.9,ka:.95,kp:.5,kq:.92},
+ {n:'Cotton',ex:6e-5,dg:140,bt:.1,fat:.985,th0:.5,thr:[.15,3],ig:250,tm:600,cd:.04,hc:1.7,ab:.8,rg:.95,mt:0,si:.2,sh:.35,bp:1.2,wv:.1,sheet:true,lb:'Cotton cloth',pc:'225,210,170',tf:300,tt:'triangle',c0:4,c1:4,a0:.22,tx:'c',pal:[[150,128,92],[222,206,168],[250,240,210]],h:1.5,fl:.8,sf:0,ac:.8,t:'yarns snap one by one along the weave',m:.9,w:1,d:.985,s:.85,v:.3,c:[222,206,168],ko:.95,ka:.95,kp:.6,kq:.6},
+ {n:'Rope',ex:1e-4,dg:150,bt:.2,fat:.985,th0:8,thr:[3,30],ig:260,tm:600,cd:.05,hc:1.2,gum:.8,sheet:false,lb:'Rope',pc:'190,150,95',tf:140,tt:'triangle',c0:34,c1:18,a0:.28,a1:.45,tx:'r',pal:[[88,60,30],[170,126,74],[214,178,120]],h:3,fl:.5,sf:0,ac:.7,t:'strands fail one after another',m:1.3,w:1.3,d:.985,s:.85,v:.3,c:[184,140,86],ko:.85,ka:.9,kp:.85,kq:.85},
+ {n:'Rubber',ex:4e-4,dg:90,bt:.65,fat:.997,th0:2,thr:[.5,12],tm:220,cd:.05,hc:1,gum:.55,ab:.45,rg:.3,mt:0,si:1.1,sh:0,bp:.3,wv:.5,sheet:true,lb:'Rubber sheet',pc:'80,200,180',tf:220,tt:'sine',c0:4,c1:4,a0:.4,tx:'u',pal:[[16,100,92],[60,190,170],[160,242,228]],h:3.5,fl:.4,sf:.1,ac:.2,t:'stretches, blunts the tear and turns it sideways',m:1.3,w:1.4,d:.997,s:.4,v:.2,c:[60,190,170],ko:.8,ka:.95,kp:1.12,kq:1.12},
+ {n:'Steel',ex:4e-5,dg:600,bt:.3,fat:.95,th0:2,thr:[.3,25],tm:1400,cd:.35,hc:.9,rig:5,rg:.32,mt:1,si:1,sh:0,bp:.5,wv:.6,sheet:true,lb:'Steel sheet',pc:'255,210,130',tf:90,tt:'sawtooth',c0:4,c1:4,a0:.12,tx:'s',pal:[[62,72,82],[160,176,190],[246,250,255]],h:12,fl:0,sf:.7,ac:.8,t:'stretches and thins before it tears',m:2.6,w:1.1,d:.975,s:1,v:.15,c:[170,185,196],ko:.95,ka:.95,kp:.7,kq:.7,y:.35,f:.05,e:.3},
+ {n:'Kevlar',ex:0,dg:300,bt:.05,fat:.99,th0:1,thr:[.3,6],tm:480,cd:.02,hc:.8,rig:2,rg:.55,mt:0,si:.6,sh:.3,bp:.9,wv:.15,sheet:true,lb:'Kevlar sheet',pc:'255,220,90',tf:180,tt:'sawtooth',c0:4,c1:4,a0:.28,tx:'k',pal:[[140,98,8],[238,194,38],[255,236,150]],h:8,fl:.1,sf:.1,ac:.3,t:'fibers split lengthwise',m:1.5,w:1.2,d:.98,s:1,v:.45,c:[240,196,40],ko:.65,ka:.97,kp:.97,kq:.97}
+];
+MATS.push(MATS.splice(2,1)[0]);
+MATS.push({n:'Net',ex:5e-4,dg:90,bt:.2,fat:.985,th0:1.5,thr:[.5,8],tm:220,cd:.03,hc:1.5,sheet:false,lb:'Net',pc:'230,235,235',tf:200,tt:'triangle',t:'thin cords snap and the tear runs along the mesh',m:1,w:1,d:.985,s:.85,v:.35,c0:24,c1:12,a0:.07,a1:.14,tx:'c',pal:[[150,158,160],[226,232,232],[255,255,255]],h:1.2,fl:.6,sf:0,ac:.8,p:.85,ko:.8,ka:.9,kp:.8,kq:.8});
+let mat=MATS[1],th=MATS[1].th0;
+const thf=()=>Math.pow(th/mat.th0,.6);
+let fN=0,coatM=null,mount='Frame',windAmp=0,tt=0,bank=0,lastR=0,primId=null;const HP=new Map();
+const TOOLS=[
+{n:'Hand',k:'grab',r:38},{n:'Pinch',k:'grab',r:12},{n:'Hook',k:'grab',r:5},{n:'Claw',k:'grab',r:75},
+{n:'Stick',k:'push',r:18},
+{n:'Knife',k:'cut',r:6,p:3,s:'k'},{n:'Box cutter',k:'cut',r:4,p:2.5,s:'k'},{n:'Scissors',k:'cut',r:8,p:4,s:'k'},
+{n:'Shears',k:'cut',r:9,p:8,s:'k'},{n:'Wire cutters',k:'cut',r:7,p:7,s:'k'},{n:'Bolt cutters',k:'cut',r:11,p:11,s:'k'},
+{n:'Saw',k:'cut',r:9,p:6,s:'s'},{n:'Drill',k:'cut',r:8,p:12,s:'g'},{n:'Chainsaw',k:'cut',r:16,p:14,s:'g'},
+{n:'Angle grinder',k:'cut',r:14,p:22,s:'g'},{n:'Laser',k:'cut',r:4,p:30,s:'l'},
+{n:'Blowtorch',k:'torch',r:32},{n:'Acid',k:'acid',r:42},
+{n:'Hammer',k:'hit',r:26,p:5},{n:'Sledgehammer',k:'hit',r:48,p:9},{n:'Pickaxe',k:'hit',r:13,p:14},{n:'Dynamite',k:'hit',r:100,p:40,b:1}
+];
+TOOLS.push({n:'Plasma cutter',k:'cut',r:5,p:40,s:'p'},{n:'Shredder',k:'cut',r:30,p:16,s:'g'},{n:'Magnet',k:'magnet',r:150},{n:'Freezer',k:'freeze',r:46},{n:'Welder',k:'weld',r:22},{n:'Patch',k:'patch',r:44});
+let tool=TOOLS[0],down=false,prev={x:0,y:0},lastTool=0,lastHit=0,lastHint=0;
+const tp=T=>T.p*(T.n=='Plasma cutter'?PL.pow:T.n=='Laser'?LAS.pow:1)*(1+.3*(T.lv||0))*(1-.4*(T.dull||0));
+const resist=()=>mat.h*(1+1.2*S()/100)*thf();
+function dseg(px,py,a,b){const dx=b.x-a.x,dy=b.y-a.y,l2=dx*dx+dy*dy;let u=l2?((px-a.x)*dx+(py-a.y)*dy)/l2:0;u=Math.max(0,Math.min(1,u));return Math.hypot(px-(a.x+u*dx),py-(a.y+u*dy))}
+function peel(l){if(!coatM)return;const A=nodes[l.a],B=nodes[l.b],x=(A.x+B.x)/2,y=(A.y+B.y)/2;for(let i=0;i<2;i++)emit({k:'f',x,y,vx:(Math.random()-.5)*2,vy:(Math.random()-.5)*2-.3,life:1,dec:.02,drag:.95,g:.02,c:coatM.pc,z:3,r:Math.random()*6.28,vr:(Math.random()-.5)*.4,t:Math.random()*6})}
+function emit(o){if(parts.length<900)parts.push(o)}
+function spark(x,y,n,c,v,z){for(let i=0;i<n;i++){const a=Math.random()*6.28,s=(.4+Math.random())*v;emit({k:'s',x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s-1,life:1,dec:.018+Math.random()*.025,drag:.97,g:.12,c,z:z||2})}}
+function smoke(x,y,n,c){for(let i=0;i<n;i++)emit({k:'m',x,y,vx:(Math.random()-.5)*.8,vy:-.4-Math.random()*.8,life:1,dec:.012+Math.random()*.01,drag:.98,g:-.01,c:c||'120,120,120',z:5+Math.random()*6})}
+function matBits(x,y){
+  if(parts.length>700)return;
+  const n=mat.n,c=mat.pc,R=Math.random;
+  const f=(len,v)=>emit({k:'f',x,y,vx:(R()-.5)*v,vy:(R()-.5)*v-.4,life:1,dec:.014+R()*.012,drag:.95,g:.015,c,z:len,r:R()*6.28,vr:(R()-.5)*.4,t:R()*6});
+  const chip=()=>emit({k:'c',x,y,vx:(R()-.5)*3,vy:-R()*2,life:1,dec:.03,drag:.97,g:.2,c,z:2});
+  if(n=='Paper'){f(3,2.5);f(2.2,2)}
+  else if(n=='Cotton'){f(4,1.6);f(3,1.4)}
+  else if(n=='Kevlar'){f(5,1.8);f(4,1.5)}
+  else if(n=='Rope'){f(3.5,2);chip()}
+  else if(n=='Net'){f(3,2)}
+  else if(n=='Rubber'){emit({k:'b',x,y,vx:(R()-.5)*3,vy:-R()*2,life:1,dec:.03,drag:.96,g:.14,c,z:2.2})}
+  else{spark(x,y,2,'255,205,120',4,2);chip()}
+}
+function stepParts(){
+  let j=0;
+  for(let i=0;i<parts.length;i++){
+    const p=parts[i],d=p.drag||.98;
+    p.vx*=d;p.vy=p.vy*d+(p.g||0);
+    if(p.k=='f'){p.t+=.35;p.vx+=Math.sin(p.t)*.06;p.r+=p.vr}
+    if(p.k=='m')p.z+=.4;
+    p.x+=p.vx;p.y+=p.vy;p.life-=p.dec||.04;
+    if(p.life>0)parts[j++]=p;
+    else if(p.k=='s'&&Math.random()<.12)emit({k:'e',x:p.x,y:p.y,vx:p.vx*.2,vy:0,life:1,dec:.02,drag:.98,g:.02,c:p.c,z:2});
+  }
+  parts.length=j;
+}
+function drawParts(){
+  for(const p of parts){
+    const a=Math.max(0,p.life);
+    if(p.k=='f'){const dx=Math.cos(p.r)*p.z,dy=Math.sin(p.r)*p.z;ctx.strokeStyle='rgba('+p.c+','+a+')';ctx.lineWidth=1.2;ctx.beginPath();ctx.moveTo(p.x-dx,p.y-dy);ctx.lineTo(p.x+dx,p.y+dy);ctx.stroke()}
+    else if(p.k=='c'){ctx.fillStyle='rgba('+p.c+','+a+')';ctx.fillRect(p.x,p.y,p.z,p.z)}
+    else if(p.k=='b'){ctx.fillStyle='rgba('+p.c+','+a+')';ctx.beginPath();ctx.arc(p.x,p.y,p.z,0,7);ctx.fill()}
+    else if(p.k=='m'){ctx.fillStyle='rgba('+p.c+','+(a*.22)+')';ctx.beginPath();ctx.arc(p.x,p.y,p.z,0,7);ctx.fill()}
+  }
+  ctx.globalCompositeOperation='lighter';
+  for(const p of parts){
+    const a=Math.max(0,p.life);
+    if(p.k=='s'){ctx.strokeStyle=a>.75?'rgba(255,248,225,'+a+')':'rgba('+p.c+','+a+')';ctx.lineWidth=p.z*.6+.4;ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p.x-p.vx*1.8,p.y-p.vy*1.8);ctx.stroke()}
+    else if(p.k=='e'){ctx.fillStyle='rgba(255,150,60,'+(a*.8)+')';ctx.beginPath();ctx.arc(p.x,p.y,p.z*a+.5,0,7);ctx.fill()}
+  }
+  ctx.globalCompositeOperation='source-over';
+}
+function modal(f0,rs,dec,amp){rs.forEach((m,i)=>{const d=dec/(1+i*.7),a=amp/(i+1);tone(f0*m,f0*m*.997,'sine',d,a);if(mat.n=='Steel')tone(f0*m*1.004,f0*m*1.001,'sine',d*.9,a*.6)})}
+const TP={Paper:{f:5500,q:1.2,d:.006,a:.5},Cotton:{f:1800,q:.8,d:.012,a:.4,col:'p'},Rubber:{f:350,q:3,d:.04,a:.6,col:'b'},Steel:{f:4500,q:1.5,d:.004,a:.45},Kevlar:{f:2600,q:2,d:.01,a:.45},Rope:{f:1000,q:1.5,d:.015,a:.5,col:'p'},Net:{f:3200,q:1.5,d:.006,a:.35}};
+let lastRip=0;
+function ripSound(nb,x){
+  if(!ac)return;const now=performance.now();if(now-lastRip<30)return;lastRip=now;
+  curPan=Math.max(-.7,Math.min(.7,((x||W/2)/W*2-1)*.7));
+  if(samp('tear.'+mat.n,.9))return;
+  const P=TP[mat.n],n=Math.min(nb,10),t0=ac.currentTime;
+  for(let i=0;i<n;i++){
+    const amp=P.a*(.12+.88*Math.pow(Math.random(),3)),dl=Math.random()*.06;
+    const s=ac.createBufferSource(),fl=ac.createBiquadFilter(),g=ac.createGain();
+    s.buffer=noiseBuf(P.col);fl.type='bandpass';fl.frequency.value=P.f*(.8+Math.random()*.5);fl.Q.value=P.q;
+    g.gain.setValueAtTime(amp*.5,t0+dl);g.gain.exponentialRampToValueAtTime(.0005,t0+dl+P.d);
+    s.connect(fl);fl.connect(g);g.connect(dest());s.start(t0+dl,Math.random()*1.5);s.stop(t0+dl+P.d+.01);
+  }
+  if(mat.n=='Rubber')tone(180,70,'sine',.1,.25);
+  if(mat.n=='Steel'&&Math.random()<.2)modal(1100*(.9+Math.random()*.3),[1,2.76,5.4,8.9],.16,.05);
+  if(nb>20)hiss('lowpass',1500,.4,.15,.15,'p');
+  if(mat.n=='Rope'&&Math.random()<.35)twang(70+Math.random()*90,.35,.996,.22);
+  else if(mat.n=='Net'&&Math.random()<.3)twang(500+Math.random()*400,.15,.99,.12);
+  else if(mat.n=='Rubber'&&Math.random()<.4)twang(120+Math.random()*140,.2,.97,.3);
+}
+function scrape(T){
+  const r=.85+Math.random()*.3,n=mat.n;
+  hiss('bandpass',(n=='Steel'?3500:n=='Rubber'?900:1800)*r,1.5,.07,.12);
+  if(n=='Steel'){hiss('highpass',7000,1,.05,.1);modal(1800*r,[1,2.76],.15,.03)}
+  if(n=='Rubber')tone(600+Math.random()*300,500,'sine',.06,.04);
+}
+function matLayer(T){
+  const r=.85+Math.random()*.3,n=mat.n;
+  if(T.k=='hit'){
+    const base=(T.chip?2400:T.n=='Sledgehammer'?330:T.n=='Pickaxe'?1500:T.b?0:700)*(1+S()/150)*r/Math.pow(thf(),.3);
+    if(!base)return;
+    if(n=='Steel')modal(base,[1,2.76,5.4,8.93],.9,.14);
+    else if(n=='Rubber'){tone(130*r,70,'sine',.18,.25);tone(260*r,120,'triangle',.08,.08)}
+    else if(n=='Paper')hiss('bandpass',1800,1,.05,.15);
+    else if(n=='Cotton')hiss('lowpass',700,.5,.1,.2);
+    else if(n=='Kevlar')modal(base*.4,[1,1.9],.12,.1);
+    else if(n=='Rope')hiss('lowpass',600,.7,.08,.18);
+    else tone(900*r,700,'sine',.04,.05);
+  }else if(T.k=='cut'){
+    if(n=='Paper')hiss('highpass',6000,.8,.03,.08);
+    else if(n=='Cotton')hiss('bandpass',2200,1,.04,.1);
+    else if(n=='Rubber'){hiss('lowpass',1500,.5,.06,.12);tone(900*r,600,'sine',.05,.03)}
+    else if(n=='Steel'){hiss('highpass',6500,1.5,.05,.12);if(Math.random()<.3)modal(2400*r,[1,2.76],.18,.03)}
+    else if(n=='Kevlar')hiss('bandpass',1600,3,.05,.12);
+    else if(n=='Rope')hiss('bandpass',650,1.2,.05,.12);
+    else tone(2800*r,2600,'triangle',.02,.04);
+  }
+}
+const MACH=['Saw','Drill','Chainsaw','Angle grinder','Laser','Blowtorch','Plasma cutter','Shredder','Welder','Freezer','Magnet'];
+let mach=null,toolLoad=0;
+function explode(){
+  tone(70,22,'sine',1.1,.9);
+  hiss('highpass',2500,.5,.08,.9);
+  hiss('lowpass',600,.5,1.4,.7,'b');
+  hiss('bandpass',1200,.4,.5,.3,'p');
+  for(let i=0;i<10;i++)setTimeout(()=>{if(ac)hiss('bandpass',2000+Math.random()*3000,2,.01,.1*Math.random())},(.15+Math.random()*1.2)*1000);
+}
+function machStop(){
+  if(!mach)return;const m=mach;mach=null;
+  try{m.g.gain.setTargetAtTime(0,ac.currentTime,.05)}catch(_){}
+  setTimeout(()=>{try{m.srcs.forEach(s=>s.stop())}catch(_){}},500);
+}
+function machStart(T){
+  if(!ac)return;machStop();if(!master)initAudio();
+  const g=ac.createGain();g.gain.value=1;g.connect(dest());
+  const srcs=[],P={};
+  const osc=(ty,f)=>{const o=ac.createOscillator();o.type=ty;o.frequency.value=f;srcs.push(o);return o};
+  const nz=c=>{const s=ac.createBufferSource();s.buffer=noiseBuf(c);s.loop=true;srcs.push(s);return s};
+  const flt=(ty,f,q)=>{const x=ac.createBiquadFilter();x.type=ty;x.frequency.value=f;x.Q.value=q||.7;return x};
+  const gn=v=>{const x=ac.createGain();x.gain.value=v;return x};
+  const n=T.n;
+  if(n=='Angle grinder'){
+    P.a=osc('sawtooth',180);const lp=flt('lowpass',1400);P.a.connect(lp);lp.connect(gn(.09)).connect(g);
+    P.b=osc('square',2600);P.b.connect(gn(.012)).connect(g);
+    const s=nz('w'),hp=flt('highpass',3500);P.nl=gn(0);s.connect(hp);hp.connect(P.nl);P.nl.connect(g);
+  }else if(n=='Chainsaw'){
+    P.a=osc('sawtooth',55);P.c=osc('sawtooth',110);const lp=flt('lowpass',900),am=gn(.5);
+    P.a.connect(lp);P.c.connect(lp);lp.connect(am);am.connect(gn(.14)).connect(g);
+    P.l=osc('sine',22);const lg=gn(.5);P.l.connect(lg);lg.connect(am.gain);
+    const s=nz('w'),bp=flt('bandpass',2200,1);P.nl=gn(0);s.connect(bp);bp.connect(P.nl);P.nl.connect(g);
+  }else if(n=='Drill'){
+    P.a=osc('sawtooth',420);const lp=flt('lowpass',2800);P.a.connect(lp);lp.connect(gn(.07)).connect(g);
+    const s=nz('w'),bp=flt('bandpass',3200,1);P.nl=gn(0);s.connect(bp);bp.connect(P.nl);P.nl.connect(g);
+  }else if(n=='Saw'){
+    const s=nz('p'),bp=flt('bandpass',1500,1.2),am=gn(.5);P.nl=gn(0);
+    s.connect(bp);bp.connect(am);am.connect(P.nl);P.nl.connect(g);
+    P.l=osc('sine',5);const lg=gn(.5);P.l.connect(lg);lg.connect(am.gain);
+  }else if(n=='Blowtorch'){
+    const s=nz('b'),lp=flt('lowpass',900);P.lp=lp;P.nl=gn(.18);s.connect(lp);lp.connect(P.nl);P.nl.connect(g);
+    const s2=nz('p'),bp=flt('bandpass',450,1),fl=gn(.12);s2.connect(bp);bp.connect(fl);fl.connect(g);
+    P.l=osc('sine',.35);const lg=gn(.08);P.l.connect(lg);lg.connect(fl.gain);
+    const s3=nz('w'),hp=flt('highpass',3500);s3.connect(hp);hp.connect(gn(.02)).connect(g);
+  }else if(n=='Shredder'){
+    P.a=osc('sawtooth',62);const lp=flt('lowpass',700),am=gn(.6);P.a.connect(lp);lp.connect(am);am.connect(gn(.13)).connect(g);
+    P.l=osc('sine',9);const lg=gn(.4);P.l.connect(lg);lg.connect(am.gain);
+    const s=nz('w'),bp=flt('bandpass',1200,1);P.nl=gn(0);s.connect(bp);bp.connect(P.nl);P.nl.connect(g);
+  }else if(n=='Plasma cutter'){
+    P.a=osc('sawtooth',100);const lp=flt('lowpass',700);P.a.connect(lp);lp.connect(gn(.05)).connect(g);
+    const s=nz('w'),hp=flt('highpass',4500);P.nl=gn(.04);s.connect(hp);hp.connect(P.nl);P.nl.connect(g);
+  }else if(n=='Welder'){
+    P.a=osc('sawtooth',100);const lp=flt('lowpass',800);P.a.connect(lp);lp.connect(gn(.05)).connect(g);
+    const s=nz('w'),hp=flt('highpass',3000);P.nl=gn(.03);s.connect(hp);hp.connect(P.nl);P.nl.connect(g);
+  }else if(n=='Freezer'){
+    const s=nz('p'),hp=flt('highpass',4000);P.nl=gn(0);s.connect(hp);hp.connect(P.nl);P.nl.connect(g);
+  }else if(n=='Magnet'){
+    P.a=osc('sine',60);P.a.connect(gn(.06)).connect(g);P.b=osc('sine',120);P.b.connect(gn(.03)).connect(g);
+  }else{
+    P.a=osc('sine',130);P.a.connect(gn(.05)).connect(g);
+    P.b=osc('sine',260);P.b.connect(gn(.02)).connect(g);
+    const s=nz('w'),hp=flt('highpass',6000);P.nl=gn(0);s.connect(hp);hp.connect(P.nl);P.nl.connect(g);
+  }
+  srcs.forEach(s=>s.start());
+  mach={g,srcs,P,T};
+}
+function updMach(l){
+  if(!mach||!ac)return;
+  const P=mach.P,n=mach.T.n,t=ac.currentTime,set=(prm,v)=>prm.setTargetAtTime(v,t,.06);
+  if(n=='Angle grinder'){set(P.a.frequency,180-35*l);set(P.b.frequency,2600-300*l);set(P.nl.gain,l*.22)}
+  else if(n=='Chainsaw'){set(P.a.frequency,55-8*l);set(P.c.frequency,110-16*l);set(P.l.frequency,22-4*l);set(P.nl.gain,l*.16)}
+  else if(n=='Drill'){set(P.a.frequency,420-60*l);set(P.nl.gain,l*.14)}
+  else if(n=='Saw'){set(P.nl.gain,l*.3)}
+  else if(n=='Blowtorch'){set(P.nl.gain,TORCH.gas>0?(.1+.03*TORCH.tip*TORCH.press)*(1+l*.6):0);set(P.lp.frequency,700+TORCH.tip*160*TORCH.press)}
+  else if(n=='Shredder'){set(P.a.frequency,62-10*l);set(P.nl.gain,l*.2)}
+  else if(n=='Plasma cutter'){set(P.nl.gain,.04+l*.2)}
+  else if(n=='Welder'){set(P.nl.gain,.03+l*.2)}
+  else if(n=='Freezer'){set(P.nl.gain,l*.18)}
+  else if(n=='Magnet'){set(P.a.frequency,60+l*25)}
+  else{set(P.nl.gain,l*.08)}
+}
+let hotL=[];
+function addHot(l){if(!l.ih){l.ih=1;hotL.push(l)}}
+function glow(l,v){const A=nodes[l.a],B=nodes[l.b];for(const nd of [A,B])for(const q of nd.adj)if(q.on){q.T=Math.max(q.T||20,v>.7?1000:650);addHot(q)}}
+function tmult(l){
+  const T=l.T||20;
+  if(mat.n=='Steel'){if(T<300)return 1;if(T<800)return 1-.7*(T-300)/500;return Math.max(.08,.3-.22*(T-800)/400)}
+  return T>100?Math.max(.3,1-(T-100)/400):1;
+}
+let hotInfo={T:0,x:0,y:0};
+function thermal(){
+  hotInfo={T:0,x:hotInfo.x,y:hotInfo.y};burnCount=0;
+  if(!hotL.length)return;
+  const L=hotL;hotL=[];
+  for(const l of L){
+    if(!l.on)continue;
+    const Tl=l.T||20;
+    for(let e=0;e<2;e++)for(const q of nodes[e?l.b:l.a].adj){
+      if(q===l||!q.on)continue;
+      const f=(Tl-(q.T||20))*mat.cd*.06;
+      if(f>0){l.dT=(l.dT||0)-f;q.dT=(q.dT||0)+f;if(!q.ih){q.ih=1;L.push(q)}}
+    }
+  }
+  for(const l of L){
+    if(!l.on){l.ih=0;continue}
+    let T=(l.T||20)+(l.dT||0);l.dT=0;T+=(20-T)*.012;if(T>1800)T=1800;l.T=T;
+    const A=nodes[l.a],B=nodes[l.b],mx=(A.x+B.x)/2,my=(A.y+B.y)/2;
+    if(T>(l.mx||0))l.mx=T;
+    l.ex=Math.min(.2,(T-20)*mat.ex);
+    if(T>mat.dg)l.k=Math.max(.2,l.k*(1-.0015*(T-mat.dg)/200));
+    if(mat.n=='Steel'&&T>700&&l.len<l.l0*1.3)l.len*=1.0008;
+    if(T>100&&Math.random()<.01+(T-100)/20000)smoke(mx,my,1,mat.n=='Steel'?'200,200,200':'120,110,100');
+    if(T>hotInfo.T){hotInfo.T=T;hotInfo.x=mx;hotInfo.y=my}
+    if(l.co>0&&coatM&&((coatM.ig&&T>coatM.ig)||T>coatM.tm)){l.co=0;peel(l);smoke(mx,my,1,'60,60,60')}
+    if(!(l.co>0)&&mat.ig&&T>mat.ig&&!l.fuel)l.fuel=1;
+    if(l.fuel>0){
+      burnCount++;l.T=T+=9;l.fuel-=.016;
+      if(Math.random()<.08)spark(mx,my,1,'255,150,60',1.4);
+      if(Math.random()<.05)smoke(mx,my,1);
+      if(l.fuel<=0){cutLink(l,1,'80,70,60',1.5);smoke(mx,my,2,'50,50,50');l.ih=0;continue}
+    }else if(!(l.co>0)&&T>mat.tm){
+      if(mat.n=='Steel'&&Math.random()<.02)hurt('feet',6*(1-P('molten')),'molten');
+      const c=mat.n=='Steel'?'255,170,70':mat.n=='Rubber'?'20,60,55':mat.n=='Net'?'235,235,235':'60,55,50';
+      cutLink(l,mat.n=='Steel'?3:1,mat.n=='Steel'?'255,190,90':c,3);
+      emit({k:'b',x:mx,y:my,vx:(Math.random()-.5)*.6,vy:.4,life:1,dec:.02,drag:.99,g:.16,c,z:2.6});
+      if(mat.n!='Steel')smoke(mx,my,1,mat.n=='Kevlar'?'40,40,40':'30,30,30');
+      l.ih=0;continue;
+    }
+    if(T>21||l.fuel>0){hotL.push(l)}else{l.ih=0;l.T=undefined;l.ex=0}
+  }
+}
+function toolSnd(T,out){
+  if(!ac)return;const now=performance.now();if(now-lastTool<(T.n=='Blowtorch'?110:55))return;lastTool=now;
+  curPan=Math.max(-.7,Math.min(.7,(ptr.x/W*2-1)*.7));
+  if(samp('tool.'+T.n,.8)&&out!='skid')return;
+  if(MACH.includes(T.n)){if(out!='skid')matLayer(T);return}
+  if(out=='skid'){scrape(T);return}
+  const r=.85+Math.random()*.3;
+  switch(T.n){
+  case 'Hand':hiss('lowpass',500,.5,.09,.18);break;
+  case 'Pinch':tone(2200*r,1800,'sine',.03,.08);break;
+  case 'Hook':tone(1600*r,1500,'triangle',.12,.1);tone(2400,2300,'sine',.08,.04);break;
+  case 'Claw':tone(180,320,'sawtooth',.14,.08);hiss('bandpass',800,2,.1,.1);break;
+  case 'Stick':hiss('highpass',2000,.7,.004,.3);modal(280*r,[1,2.4,4.3],.08,.3);break;
+  case 'Knife':hiss('bandpass',4200*r,3,.05,.2);break;
+  case 'Box cutter':hiss('highpass',3800,.8,.03,.12);tone(1600,1500,'square',.015,.05);break;
+  case 'Scissors':tone(3000*r,2600,'triangle',.03,.1);hiss('highpass',6500,.8,.025,.12);break;
+  case 'Shears':tone(1500*r,1100,'triangle',.05,.14);hiss('highpass',5000,.8,.04,.18);break;
+  case 'Wire cutters':tone(1700*r,800,'triangle',.04,.16);hiss('highpass',4500,.8,.02,.16);break;
+  case 'Bolt cutters':tone(170*r,70,'sine',.14,.5);hiss('highpass',3500,.8,.03,.22);break;
+  case 'Saw':tone(200*r,185,'sawtooth',.06,.07);hiss('bandpass',1500*r,1.2,.06,.14);break;
+  case 'Drill':tone(420*r,440,'sawtooth',.07,.07);hiss('bandpass',3200,1,.05,.1);break;
+  case 'Chainsaw':tone(85*r,80,'sawtooth',.08,.12);tone(92,88,'square',.08,.05);hiss('lowpass',900,.5,.07,.18);break;
+  case 'Angle grinder':tone(1300*r,1250,'sawtooth',.07,.05);hiss('highpass',5000*r,.7,.08,.28);break;
+  case 'Laser':tone(2600*r,900,'sine',.1,.07);hiss('highpass',7000,.8,.05,.06);break;
+  case 'Blowtorch':hiss('lowpass',1500,.3,.16,.18);break;
+  case 'Patch':hiss('bandpass',2500,1.2,.18,.25,'p');break;
+  case 'Magnet':tone(110,100,'sine',.12,.15);hiss('lowpass',300,.5,.05,.1);break;
+  case 'Acid':tone(400+Math.random()*900,900+Math.random()*900,'sine',.05,.05);hiss('highpass',7000,.7,.06,.08);break;
+  case 'Chipping hammer':hiss('highpass',4500,.8,.006,.35);tone(2600*r,2300,'triangle',.05,.18);break;
+  case 'Hammer':hiss('highpass',2500,.7,.004,.5);tone(110*r,45,'sine',.2,.5);hiss('lowpass',600,.5,.1,.3);break;
+  case 'Sledgehammer':hiss('highpass',2500,.7,.005,.6);tone(70*r,30,'sine',.3,.7);hiss('lowpass',400,.5,.18,.5);break;
+  case 'Pickaxe':hiss('highpass',3500,.7,.003,.5);tone(1900*r,1700,'triangle',.15,.15);tone(150,60,'sine',.1,.35);break;
+  case 'Dynamite':explode();break;
+  }
+  matLayer(T);
+}
+const SPK={'Plasma cutter':10,Shredder:3,'Angle grinder':9,Chainsaw:5,Drill:3,Saw:4,Laser:4,'Bolt cutters':2,Shears:1,'Wire cutters':1,Scissors:1,Knife:1};
+function cutLink(l,n,c,v){l.on=false;ripped++;const A=nodes[l.a],B=nodes[l.b];spark((A.x+B.x)/2,(A.y+B.y)/2,n,c,v)}
+function hint(m){const now=performance.now();if(now-lastHint>1800){lastHint=now;say(m)}}
+function plasmaCalc(){
+  const cap=amps*.25,capF=Math.min(1,cap/Math.max(.2,th)),st=PL.stand=='low'?1.05:PL.stand=='high'?.8:1;
+  const vi=1.5+.35*Math.pow(amps/Math.max(.3,th),.8),r=SPD/vi;
+  PL.cap=cap;PL.vi=vi;PL.r=r;
+  PL.dross=r>1.5?'high':(r<.55||(PL.stand=='low'&&r<.8))&&SPD>.4?'low':'';
+  const sf=r>1.5?Math.max(.25,.75-.5*Math.min(1,(r-1.5)/1.5)):1;
+  PL.pow=(amps/60)*capF*st*sf;
+}
+function laserCalc(){const cap=6*Math.pow(LAS.pw/1000,.8)*(LAS.gas=='O2'?1.15:LAS.gas=='N2'?.95:.8);LAS.cap=cap;LAS.pow=Math.min(1,cap/Math.max(.2,th))}
+function shatterDisc(){
+  GRD.broken=true;shake+=10;spark(ptr.x,ptr.y,45,'255,205,120',8,3);say('The cut-off wheel shattered! Never twist or side-load it.');
+  hurt('eyes',10*(1-P('eSpark')),'spark');hurt('body',8*(1-bodyG().cutB),'cutB');hurt('hands',6*(1-(glove().cut>=5?.8:glove().cut/8)),'cut');
+}
+function weakMsg(){
+  if(tool.n=='Plasma cutter')return PL.cap<th?'Plasma: '+amps+' A only cuts about '+PL.cap.toFixed(1)+' mm. Raise the current.':PL.dross=='high'?'Plasma: too fast, the arc lags behind. Slow down.':'Plasma: not cutting through.';
+  if(tool.n=='Laser'&&LAS.cap<th)return 'Laser: '+LAS.pw+' W only cuts about '+LAS.cap.toFixed(1)+' mm of steel. Raise the power.';
+  if(tool.n=='Saw'&&GRD.blade=='wood')return 'A wood blade will not cut metal. Fit a bi-metal or carbide blade.';
+  return tool.n+' is too weak for this. Try a stronger tool.';
+}
+function useTool(){
+  const k=tool.k;
+  SPD=SPD*.8+Math.hypot(ptr.x-prev.x,ptr.y-prev.y)*.2;
+  if(tool.chip){if(down&&Math.hypot(ptr.x-prev.x,ptr.y-prev.y)>1.5)chipTap(ptr);prev={x:ptr.x,y:ptr.y};toolLoad=0;toolSkid=false;return}
+  if(tool.n=='Plasma cutter')plasmaCalc();else if(tool.n=='Laser')laserCalc();
+  toolLoad=0;toolSkid=false;
+  if(rodCur&&(!down||k!='rod'))finishRod();
+  if(!down||k=='grab'){prev={x:ptr.x,y:ptr.y};GRD.ang=undefined;WS.lbx=-99;WS.v=0;return}
+  if(k=='push'){
+    for(const n of nodes){if(n.pin)continue;const dx=n.x-ptr.x,dy=n.y-ptr.y,d=Math.hypot(dx,dy);if(d<tool.r){const q=d||1;n.x=ptr.x+dx/q*tool.r;n.y=ptr.y+dy/q*tool.r}}
+  }else if(k=='cut'){
+    if(tool.n=='Angle grinder'){
+      const dd=DISCS[GRD.disc];
+      if(GRD.broken){hint('The disc is broken. Fit a new disc in the tool setup row.');prev={x:ptr.x,y:ptr.y};return}
+      if(dd.cutoff){const dx=ptr.x-prev.x,dy=ptr.y-prev.y;if(Math.hypot(dx,dy)>1.5){const a=Math.atan2(dy,dx);if(GRD.ang!==undefined){let da=Math.abs(a-GRD.ang);if(da>Math.PI)da=2*Math.PI-da;if(da>1&&Math.random()<.12*dd.frag){shatterDisc();prev={x:ptr.x,y:ptr.y};return}}GRD.ang=a}}
+    }
+    const re=Math.max(tool.r,cs*.6),R=resist(),Rc=coatM?coatM.h*(1+1.2*S()/100):0;let did=false,skid=false,touch=false;
+    if(tool.fin){
+      let tch=false;
+      for(const l of links){if(!l.on)continue;const A=nodes[l.a],B=nodes[l.b];if(dseg((A.x+B.x)/2,(A.y+B.y)/2,prev,ptr)>re)continue;tch=true;
+        if(l.rs>0){
+          if(l.rs0===undefined||l.rs>l.rs0)l.rs0=l.rs;
+          // deep corrosion eats metal: grinding clears the scale but leaves pits behind
+          const pit=Math.max(0,(l.rs0-.25)*.55),rr=(GRD.disc=='wire'?.0065:GRD.disc=='grind'?.005:.0035)*(1-.55*Math.min(1,l.rs0));
+          l.rs=Math.max(pit,l.rs-rr);
+          if(pit>.05)l.k=Math.max(.55,l.k*(1-.0004*pit))
+        }
+        if(l.mx>140)l.mx=Math.max(0,l.mx-.6)}
+      removeBeads(tool.r,GRD.disc=='wire'?.006:GRD.disc=='grind'?.035:.015);toolLoad=tch?1:0;if(tch&&Math.random()<.5)spark(ptr.x,ptr.y,2,'255,205,120',4,2.5);
+      prev={x:ptr.x,y:ptr.y};return;
+    }
+    const c=(tool.s=='l'||tool.s=='p')?'150,215,255':tool.s=='g'?'255,210,120':'255,255,255',v=tool.s=='g'?4:2;
+    for(const l of links){
+      if(!l.on)continue;
+      const A=nodes[l.a],B=nodes[l.b];
+      if(dseg((A.x+B.x)/2,(A.y+B.y)/2,prev,ptr)>re)continue;touch=true;
+      const Tm=l.T>150?tmult(l):1;
+      if(l.co>0){if(tp(tool)>=Rc*Tm){l.co=0;peel(l);did=true}else skid=true}
+      else if(tp(tool)>=R*Tm){if(mat.gum&&Math.random()>mat.gum)continue;cutLink(l,tool.s=='g'?2:1,c,v);did=true;if(tool.s=='l'||tool.s=='g'||tool.s=='p')glow(l,tool.s=='g'?.6:.9)}else{l.k*=.92;skid=true}
+    }
+    if(touch&&mat.n=='Steel'&&SPK[tool.n])spark(ptr.x,ptr.y,SPK[tool.n],(tool.s=='l'||tool.s=='p')?'150,230,255':'255,205,120',6,tool.n=='Angle grinder'?3.2:2.5);
+    if(tool.n=='Angle grinder'&&GRD.disc=='grind')removeBeads(tool.r,.035);
+    if(tool.n=='Plasma cutter'&&did&&PL.dross&&Math.random()<.6){const ni=nearestNode(ptr.x,ptr.y),nn=nodes[ni];beads.push({n:ni,dx:ptr.x-nn.x+(Math.random()-.5)*5,dy:ptr.y-nn.y+(Math.random()-.5)*5,w:1.8+Math.random()*2.4,q:1,f:fN,dr:PL.dross=='high'?2:1})}
+    if(did&&tool.s!='l')tool.dull=Math.min(1,(tool.dull||0)+.0002*mat.h*thf()*(tool.s=='g'?.5:1));
+    toolLoad=touch?1:0;toolSkid=skid&&!did;
+    if(did)toolSnd(tool,'cut');else if(skid)toolSnd(tool,'skid');else if(touch)toolSnd(tool,'cut');if(skid&&!did)hint(weakMsg());
+  }else if(k=='torch'||k=='acid'){
+    let did=false;
+    for(const l of links){
+      if(!l.on)continue;
+      const A=nodes[l.a],B=nodes[l.b],mx=(A.x+B.x)/2,my=(A.y+B.y)/2;
+      if(Math.hypot(mx-ptr.x,my-ptr.y)>tool.r)continue;
+      did=true;
+      if(k=='torch'){
+        const d=Math.hypot(mx-ptr.x,my-ptr.y);
+        if(TORCH.gas>0){const Tf=flameTemps()[0],pw=torchPow(),Tm=20+(Tf-20)*pw/(pw+1.5*thf()),tg=20+(Tm-20)*(1-.6*d/tool.r),T0=l.T||20;if(tg>T0)l.T=T0+(tg-T0)*Math.min(.25,.05*mat.hc*pw/thf())}
+        addHot(l);
+        if(TORCH.cut)oxyCut(l,d,mx,my);
+        if(mat.n=='Steel'){if(TORCH.flame=='carb')l.k=Math.max(.2,l.k*.9995);if(TORCH.flame=='oxid')l.rs=Math.min(.4,(l.rs||0)+.0015)}
+      }else if(l.co>0){l.co=Math.max(0,l.co-.02*coatM.ac);if(l.co<=0)peel(l)}
+      else{
+        l.k*=1-.012*mat.ac;
+        if(mat.n=='Steel'){l.rs=Math.min(1,(l.rs||0)+.012);if(l.rs>=1)cutLink(l,2,'150,80,35',1.5)}
+        if(Math.random()<.04)spark(mx,my,1,'140,255,120',1);
+        if(l.k<.3)cutLink(l,1,'140,255,120',2);
+      }
+    }
+    toolLoad=did?1:0;
+    if(did)toolSnd(tool);
+  }else if(k=='magnet'){
+    if(mat.n!='Steel')hint('The magnet only works on steel.');
+    else{let did=false;for(const n of nodes){if(n.pin||n.held)continue;const dx=ptr.x-n.x,dy=ptr.y-n.y,d=Math.hypot(dx,dy);if(d<tool.r&&d>2){const f=.06*(1-d/tool.r);n.x+=dx*f;n.y+=dy*f;did=true}}toolLoad=did?1:0}
+  }else if(k=='freeze'){
+    let did=false;
+    for(const l of links){if(!l.on)continue;const A=nodes[l.a],B=nodes[l.b];if(Math.hypot((A.x+B.x)/2-ptr.x,(A.y+B.y)/2-ptr.y)>tool.r)continue;did=true;l.fz=Math.min(1,(l.fz||0)+.05);if(l.T)l.T-=(l.T-20)*.15}
+    if(did&&Math.random()<.3)smoke(ptr.x+(Math.random()-.5)*30,ptr.y+(Math.random()-.5)*30,1,'225,242,255');
+    toolLoad=did?1:0;
+  }else if(k=='weld'){
+    if(mat.n!='Steel')hint('The welder only works on steel.');
+    else weldTick();
+  }else if(k=='rod'){
+    rodTick();
+  }else if(k=='patch'){
+    let did=0;
+    for(const l of links){
+      if(l.on)continue;
+      const A=nodes[l.a],B=nodes[l.b];
+      if(Math.hypot((A.x+B.x)/2-ptr.x,(A.y+B.y)/2-ptr.y)>tool.r)continue;
+      for(const n of [A,B])if(!n.pin&&!n.held){n.x+=(n.rx-n.x)*.25;n.y+=(n.ry-n.y)*.25;n.px=n.x;n.py=n.y}
+      l.on=true;l.len=l.l0;l.k=1;l.T=undefined;l.fz=0;l.rs=0;l.co=0;did++;
+    }
+    if(did)toolSnd(tool);toolLoad=did?1:0;
+  }
+  prev={x:ptr.x,y:ptr.y};
+}
+let lastChip=0;
+function chipTap(p0){
+  const now=performance.now();if(now-lastChip<110)return;lastChip=now;
+  let hit=0,flakes=0;
+  beads=beads.filter(b=>{
+    const bq=bpos(b);if(!bq)return true;
+    const d=Math.hypot(bq.x-p0.x,bq.y-p0.y);if(d>tool.r)return true;
+    if(b.sp||b.dr){hit++;flakes++;return false}
+    if(b.slag){b.sl=(b.sl===undefined?1:b.sl)-.8*(1-.3*d/tool.r)/(b.sg||1);hit++;if(b.sl<=0){b.slag=false;flakes++}}
+    return true;
+  });
+  toolSnd(tool);spark(p0.x,p0.y,hit?6:2,'255,215,150',3,1.6);
+  for(let i=0;i<Math.min(5,flakes);i++)emit({k:'c',x:p0.x+(Math.random()-.5)*8,y:p0.y+(Math.random()-.5)*8,vx:(Math.random()-.5)*3.5,vy:-Math.random()*2.4,life:1,dec:.03,drag:.97,g:.2,c:'80,68,58',z:2.2});
+  if(hit)hurt('eyes',.5*(1-P('eSpark')),'spark');
+  else hint('Tap along the weld to chip off slag. The chipping hammer never dents the sheet.');
+}
+function doHit(p0){
+  if(tool.chip){chipTap(p0);return}
+  const now=performance.now();if(now-lastHit<350)return;lastHit=now;
+  const R=resist(),Rc=coatM?coatM.h*(1+1.2*S()/100):0;let n=0;
+  for(const l of links){
+    if(!l.on)continue;
+    const A=nodes[l.a],B=nodes[l.b],d=Math.hypot((A.x+B.x)/2-p0.x,(A.y+B.y)/2-p0.y);
+    if(d>tool.r)continue;
+    const f=tool.b?Math.pow(1-d/tool.r,.6):1-.55*d/tool.r;
+    const eff=tp(tool)*f*(mat.ab||1)*(1+(mat.bt||.1)*(l.fz||0)*1.5);
+    if(l.co>0){if(eff>=Rc){l.co=0;peel(l);n++}else l.k*=.85;continue}
+    if(eff>=R){cutLink(l,tool.b?3:1,tool.b?'255,160,50':'255,230,160',tool.b?6:3);n++}else{l.k*=.8;if(mat.n=='Steel')l.len*=1+.05*f}
+  }
+  for(const q of nodes){
+    if(q.pin)continue;const dx=q.x-p0.x,dy=q.y-p0.y,d=Math.hypot(dx,dy);
+    if(d<tool.r){const kick=tp(tool)*.25*(1-d/tool.r)/(d||1);q.px=q.x-dx*kick;q.py=q.y-dy*kick}
+  }
+  shake+=tool.b?22:tool.p>10?7:5;if(tool.b){flash=.6;freeze=5;vib([40,30,60])}else{freeze=2;vib(18)}
+  toolSnd(tool);if(mat.n=='Steel')spark(p0.x,p0.y,tool.b?40:22,'255,220,150',tool.b?8:5,3);
+  if(tool.b){spark(p0.x,p0.y,60,'255,170,70',7);smoke(p0.x,p0.y,22,'90,90,90')}
+  if(!n)hint(tool.n+' only dented it. Try a stronger tool.');
+  beads=beads.filter(b=>{const bq=bpos(b);if(!bq)return true;if(Math.hypot(bq.x-p0.x,bq.y-p0.y)<tool.r){b.slag=false;if(b.dr||b.sp)return false}return true});
+  hazardEvent(tool);
+}
+
+const limOf=(m,f)=>Math.max(1.12,1+(.2+.45*Math.pow(1-S()/100,3)+Math.pow(S()/100,1.6)*5.5)*m.m*f);
+const limit=()=>limOf(mat,thf()); // max stretch ratio before a strand snaps
+function say(t){msg.textContent=t;msg.style.opacity=1;clearTimeout(mt);mt=setTimeout(()=>msg.style.opacity=0,900)}
+function build(){
+  dpr=window.devicePixelRatio||1;
+  W=cv.clientWidth;H=cv.clientHeight;cs=Math.max(Math.round(mat.c0+(mat.c1-mat.c0)*Math.pow(S()/100,.55)),Math.ceil(Math.sqrt((W-48)*(H-48)/NMAX)));cols=Math.max(8,Math.round((W-48)/cs)+1);rows=Math.max(8,Math.round((H-48)/cs)+1);cv.width=W*dpr;cv.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);
+  nodes=[];links=[];ripped=0;lastR=0;drag=null;hotL=[];HP.clear();primId=null;down=false;
+  const m=24,gx=(W-2*m)/(cols-1),gy=(H-2*m)/(rows-1);gnx=gx;gny=gy;gm=m;beads=[];rods=[];rodCur=null;
+  for(let j=0;j<rows;j++)for(let i=0;i<cols;i++){
+    const x=m+i*gx,y=m+j*gy;
+    nodes.push({x,y,rx:x,ry:y,px:x,py:y,pin:mount=='Frame'?(i==0||j==0||i==cols-1||j==rows-1):mount=='Curtain'?j==0:((i<3||i>cols-4)&&(j<3||j>rows-4))});
+  }
+  const id=(i,j)=>j*cols+i;
+  for(let j=0;j<rows;j++)for(let i=0;i<cols;i++){
+    if(i<cols-1)links.push(mk(id(i,j),id(i+1,j)));
+    if(j<rows-1)links.push(mk(id(i,j),id(i,j+1)));
+  }
+  Hl=new Array(cols*rows).fill(null);Vl=new Array(cols*rows).fill(null);links.forEach(l=>{(l.o=='h'?Hl:Vl)[l.j*cols+l.i]=l});mkTex();
+  L={};links.forEach(l=>L[l.o+l.i+','+l.j]=l);
+  nodes.forEach(n=>n.adj=[]);links.forEach(l=>{nodes[l.a].adj.push(l);nodes[l.b].adj.push(l)});
+  upd();
+}
+function mk(a,b){const A=nodes[a],B=nodes[b],len=Math.hypot(A.x-B.x,A.y-B.y);return{a,b,len,l0:len,on:true,st:0,co:(coatM&&mat.sheet)?1:0,k:1+(Math.random()-.5)*mat.v,o:b==a+1?'h':'v',i:a%cols,j:Math.floor(a/cols)}}
+let NMAX=4500,ema=16,lastTs=0,lastQ=0;
+let BX=new Float32Array(1),BY=new Float32Array(1),dm=new Float32Array(1),ramp=[],rampMat=null;
+let L={},T=new Float32Array(1),Hl=[],Vl=[];
+let TC=new Float32Array(1);
+function genTex(m){
+  const T=new Float32Array(cols*rows),rn=[];for(let j=0;j<rows;j++)rn.push(Math.random()-.5);const k=m.tx;
+  for(let j=0;j<rows;j++)for(let i=0;i<cols;i++){
+    let v=0;const q=Math.random()-.5;
+    if(k=='p')v=q*.12+rn[j]*.05+((i*7+j*13)%41==0?-.12:0);
+    else if(k=='c')v=(((i>>1)+(j>>1))&1?.14:-.14)+q*.12;
+    else if(k=='r')v=(((i>>2)+(j>>2))&1?.16:-.1)+q*.22;
+    else if(k=='k')v=((i+j)%6<3?.16:-.16)+q*.06;
+    else if(k=='s')v=rn[j]*.3+q*.05+Math.pow(Math.max(0,Math.sin((i+j)*.05)),10)*.35;
+    else v=q*.04+Math.pow(Math.max(0,Math.sin((i-j)*.04)),12)*.25;
+    T[j*cols+i]=v;
+  }
+  const BX=new Float32Array(cols*rows),BY=new Float32Array(cols*rows),bp=m.bp||0,wv=m.wv||0;
+  for(let j=1;j<rows-1;j++)for(let i=1;i<cols-1;i++){
+    const k2=j*cols+i;
+    BX[k2]=(T[k2+1]-T[k2-1])*bp+wv*Math.cos(i*.05+j*.02)*.2;
+    BY[k2]=(T[k2+cols]-T[k2-cols])*bp+wv*Math.cos(j*.06)*.2;
+  }
+  return{T,BX,BY};
+}
+function mkTex(){const o=genTex(mat);T=o.T;BX=o.BX;BY=o.BY;if(coatM&&mat.sheet)TC=genTex(coatM).T}
+let shred=false;
+const uiT={};
+function setTxt(id,v){if(uiT[id]!==v){uiT[id]=v;document.getElementById(id).textContent=v}}
+function upd(){
+  if(uiT.lv!==S()){uiT.lv=S();lvl.textContent=S()}
+  let alive=0;for(let i=0;i<links.length;i++)if(links[i].on)alive++;
+  const fr=alive/links.length;
+  setTxt('rip','Strands ripped: '+ripped);
+  if(fr<.25&&!shred){shred=true;say('Shredded!')}if(fr>.9)shred=false;
+  let mxT=0;for(const l of hotL)if(l.on&&(l.T||0)>mxT)mxT=l.T;
+  setTxt('tmp',mxT>60?'Heat '+Math.round(mxT)+'°C':'');
+  setTxt('pct','Net intact: '+Math.round(fr*100)+'%');pfEl.style.width=Math.round(fr*100)+'%';pfEl.style.background=fr<.3?'linear-gradient(90deg,#e5533d,#ff8a4c)':'';
+}
+let parts=[],ac=null,lastSnap=0;
+let muffle=null,tinO=null;
+let master=null,noiseCache={},ksCache={},samples={},curPan=0;
+function impulse(sec){const n=Math.floor(ac.sampleRate*sec),b=ac.createBuffer(2,n,ac.sampleRate);for(let c=0;c<2;c++){const d=b.getChannelData(c);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/n,2.6)}return b}
+function initAudio(){
+  if(master||!ac)return;
+  master=ac.createGain();master.gain.value=.9;
+  muffle=ac.createBiquadFilter();muffle.type='lowpass';muffle.frequency.value=20000;master.connect(muffle);
+  let out=muffle;
+  try{const c=ac.createDynamicsCompressor();c.threshold.value=-18;c.knee.value=12;c.ratio.value=5;c.attack.value=.003;c.release.value=.2;muffle.connect(c);c.connect(ac.destination);out=c}catch(_){muffle.connect(ac.destination)}
+  try{const rv=ac.createConvolver();rv.buffer=impulse(1.1);const w=ac.createGain();w.gain.value=.16;muffle.connect(rv);rv.connect(w);w.connect(out)}catch(_){}
+  loadSamples();
+}
+let mpan=null;
+function dest(){
+  if(!master)initAudio();
+  if(ac.createStereoPanner){if(!mpan){mpan=ac.createStereoPanner();mpan.connect(master)}mpan.pan.value=curPan;return mpan}
+  return master;
+}
+function loadSamples(){const S=window.NET_RIPPER_SAMPLES;if(!S)return;for(const k in S){try{fetch(S[k]).then(r=>r.arrayBuffer()).then(a=>ac.decodeAudioData(a)).then(b=>{samples[k]=b}).catch(()=>{})}catch(_){}}}
+function samp(k,v){const b=samples[k];if(!b)return false;const s=ac.createBufferSource(),g=ac.createGain();s.buffer=b;s.playbackRate.value=.92+Math.random()*.16;g.gain.value=v||1;s.connect(g);g.connect(dest());s.start();return true}
+function noiseBuf(k){
+  k=k||'w';if(noiseCache[k])return noiseCache[k];
+  const n=ac.sampleRate*2,b=ac.createBuffer(1,n,ac.sampleRate),d=b.getChannelData(0);
+  let b0=0,b1=0,b2=0,b3=0,b4=0,b5=0,b6=0,last=0;
+  for(let i=0;i<n;i++){
+    const w=Math.random()*2-1;
+    if(k=='w')d[i]=w;
+    else if(k=='p'){b0=.99886*b0+w*.0555179;b1=.99332*b1+w*.0750759;b2=.969*b2+w*.153852;b3=.8665*b3+w*.3104856;b4=.55*b4+w*.5329522;b5=-.7616*b5-w*.016898;d[i]=(b0+b1+b2+b3+b4+b5+b6+w*.5362)*.11;b6=w*.115926}
+    else{last=(last+.02*w)/1.02;d[i]=last*3.5}
+  }
+  return noiseCache[k]=b;
+}
+function env(g,v,dur,atk){const t=ac.currentTime,a=atk||.001;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+a);g.gain.exponentialRampToValueAtTime(.0005,t+a+dur)}
+function hiss(type,f,q,dur,v,col){const s=ac.createBufferSource(),fl=ac.createBiquadFilter(),g=ac.createGain();s.buffer=noiseBuf(col);fl.type=type;fl.frequency.value=f;fl.Q.value=q;env(g,v,dur);s.connect(fl);fl.connect(g);g.connect(dest());s.start(0,Math.random()*1.5);s.stop(ac.currentTime+dur+.03)}
+function tone(f0,f1,type,dur,v){const o=ac.createOscillator(),g=ac.createGain(),t=ac.currentTime;o.type=type;o.frequency.setValueAtTime(f0,t);o.frequency.exponentialRampToValueAtTime(f1,t+dur);env(g,v,dur);o.connect(g);g.connect(dest());o.start();o.stop(t+dur+.03)}
+function ksBuf(f,dur,damp){
+  const key=Math.round(f/8)+':'+damp;if(ksCache[key])return ksCache[key];
+  const sr=ac.sampleRate,n=Math.floor(sr*dur),b=ac.createBuffer(1,n,sr),d=b.getChannelData(0),L=Math.max(2,Math.round(sr/f)),line=new Float32Array(L);
+  for(let i=0;i<L;i++)line[i]=Math.random()*2-1;
+  let p=0;for(let i=0;i<n;i++){const nx=(p+1)%L,v=line[p];d[i]=v;line[p]=(v+line[nx])*.5*damp;p=nx}
+  return ksCache[key]=b;
+}
+function twang(f,dur,damp,v){const s=ac.createBufferSource(),g=ac.createGain();s.buffer=ksBuf(f,dur,damp);g.gain.value=v;s.connect(g);g.connect(dest());s.start()}
+function boom(x,y){
+  matBits(x,y);
+}
+function step(){
+  tt+=.03;const g=mount=='Frame'?.1:.22,wg=windAmp*(Math.sin(tt)*.5+.6+.3*Math.sin(tt*2.7));
+  for(const n of nodes){
+    if(n.pin||n.held)continue;
+    const vx=(n.x-n.px)*mat.d,vy=(n.y-n.py)*mat.d,wf=wg*(.6+.4*Math.sin(n.y*.015+tt*.7));
+    n.px=n.x;n.py=n.y;n.x+=vx+wf;n.y+=vy+g;
+  }
+  if(drag)for(const n of drag){n.px=n.x;n.py=n.y;n.x=n.hp.x+n.ox;n.y=n.hp.y+n.oy}
+  const lim=limit();
+  for(let k=0;k<6+Math.round((mat.rig||0)*Math.min(1.5,thf()));k++){
+    for(const l of links){
+      if(!l.on)continue;
+      const A=nodes[l.a],B=nodes[l.b];
+      let dx=B.x-A.x,dy=B.y-A.y,d=Math.hypot(dx,dy)||1e-6;
+      const rl=l.len*(1+(l.ex||0));l.st=d/rl;
+      const diff=(d-rl)/d*mat.s*(l.T>150?Math.max(.15,tmult(l)):1);
+      const fa=A.pin||A.held?0:1,fb=B.pin||B.held?0:1,t=fa+fb;
+      if(!t)continue;
+      A.x+=dx*diff*fa/t;A.y+=dy*diff*fa/t;
+      B.x-=dx*diff*fb/t;B.y-=dy*diff*fb/t;
+    }
+  }
+}
+function crack(){
+  const lim=limit(),limc=coatM?limOf(coatM,1):0,ex=1+S()/60;let cur=[],nb=0,bx=0,by=0;
+  const thr=q=>{const tm=(q.T>150?tmult(q):1)*(1-(mat.bt||.1)*(q.fz||0));let v=1+(lim-1)*q.k*tm*(q.rk||1);if(q.co>0)v=Math.max(v,1+(limc-1)*q.k*tm);return v};
+  const wk=f=>f<1?Math.pow(f,ex):f;
+  for(const l of links){
+    if(!l.on)continue;
+    const A=nodes[l.a],B=nodes[l.b],d=Math.hypot(B.x-A.x,B.y-A.y);
+    l.st=d/(l.len*(1+(l.ex||0)));
+    const tm=(l.T>150?tmult(l):1)*(1-(mat.bt||.1)*(l.fz||0));
+    if(l.up===undefined)l.up=0;
+    if(l.st>1.03)l.up=1;else if(l.up&&l.st<1.012){l.up=0;l.k=Math.max(.25,l.k*mat.fat)}
+    if(l.fz){l.fz*=.998;if(l.fz<.02)l.fz=0}
+    if(l.co>0&&l.st>1+(limc-1)*l.k*tm){l.co=0;peel(l)}
+    if(mat.y&&l.st>1+mat.y*(lim-1)*tm){l.len+=(d-l.len)*mat.f;l.st=d/(l.len*(1+(l.ex||0)));if(l.len>l.l0*(1+(lim-1)*mat.e)){cur.push(l);continue}}
+    if(l.st>thr(l))cur.push(l);
+  }
+  for(let gen=0;gen<4&&cur.length;gen++){
+    const next=[];
+    const hit=(q,f)=>{if(q&&q.on){q.k*=wk(f);if(q.st>thr(q))next.push(q)}};
+    for(const l of cur){
+      if(!l.on)continue;
+      l.on=false;ripped++;nb++;
+      const A=nodes[l.a],B=nodes[l.b];bx=(A.x+B.x)/2;by=(A.y+B.y)/2;
+      boom(bx,by);
+      for(const n of [A,B])for(const q of n.adj)hit(q,q.o===l.o?mat.ko:mat.ka);
+      if(l.o=='h'){const f=mat.kp;hit(L['h'+l.i+','+(l.j-1)],f);hit(L['h'+l.i+','+(l.j+1)],f)}
+      else{const f=mat.kq;hit(L['v'+(l.i-1)+','+l.j],f);hit(L['v'+(l.i+1)+','+l.j],f)}
+    }
+    cur=next;
+  }
+  if(nb)onRip(nb,bx,by);
+}
+function rgb(a){return 'rgb('+a+')'}
+const rampCache=new Map();
+function getRampFor(m){
+  let r=rampCache.get(m);if(r)return r;r=[];
+  const al=m.pal[1],wh=[255,255,255],dk=al.map(v=>v*.2),mix=(a,b,u)=>a.map((v,i)=>v+(b[i]-v)*u),hi=mix(al,wh,m.mt?.5:.3);
+  for(let b=0;b<24;b++){const f=b/23;let c;if(f<.45)c=mix(dk,al,f/.45);else if(f<.75)c=mix(al,hi,(f-.45)/.3);else c=mix(hi,wh,(f-.75)/.25);r.push('rgb('+c.map(Math.round)+')')}
+  rampCache.set(m,r);return r;
+}
+function getRamp(){return getRampFor(mat)}
+function dynLight(){
+  if(!down)return null;
+  const n=tool.n;
+  if(n=='Blowtorch')return{x:ptr.x,y:ptr.y,I:1.3,c:'255,190,110'};
+  if(n=='Plasma cutter'||n=='Laser')return{x:ptr.x,y:ptr.y,I:1.1,c:'160,210,255'};
+  if(n=='Angle grinder'||n=='Drill'||n=='Chainsaw'||n=='Saw'||n=='Welder')return{x:ptr.x,y:ptr.y,I:.9,c:'255,215,150'};
+  return null;
+}
+const K=m=>{const al=m.rg*m.rg;return{a2:al*al,F0:m.mt?.7:.04,kk:al*.5,mt:m.mt,si:m.si,sh:m.sh}};
+function shade(Kp,nx,ny,nz,nl,nh){
+  const dd=nh*nh*(Kp.a2-1)+1,D=Kp.a2/(3.14159*dd*dd),fr=1-nz,F=Kp.F0+(1-Kp.F0)*fr*fr*fr*fr*fr;
+  const G=(nl/(nl*(1-Kp.kk)+Kp.kk))*(nz/(nz*(1-Kp.kk)+Kp.kk));
+  const spec=nl>0?D*F*G/(4*nl*nz+.001)*nl:0;
+  if(Kp.mt){const env=.55+.45*Math.max(-1,Math.min(1,-2*nz*ny));return .1+env*.9+spec*Kp.si}
+  return .12+nl*.82+spec*Kp.si+Kp.sh*fr*fr*fr;
+}
+const quad=(q,a,b,d,c)=>{q.moveTo(a.x,a.y);q.lineTo(b.x,b.y);q.lineTo(d.x,d.y);q.lineTo(c.x,c.y);q.closePath()};
+const texTiles={},texPats=new Map();
+function tileFor(m){
+  if(texTiles[m.n])return texTiles[m.n];
+  const S=160,c=document.createElement('canvas');c.width=c.height=S;
+  const g=c.getContext('2d');g.fillStyle='#808080';g.fillRect(0,0,S,S);
+  let sd=(m.n.charCodeAt(0)*977+m.n.length*131)%2147483647||1;
+  const R=()=>{sd=(sd*16807)%2147483647;return sd/2147483647};
+  const OFS=[-S,0,S];
+  const ln=(x1,y1,x2,y2,w,col)=>{g.strokeStyle=col;g.lineWidth=w;for(const ox of OFS)for(const oy of OFS){const a=x1+ox,b=x2+ox,c=y1+oy,d=y2+oy;if(Math.max(a,b)<-2||Math.min(a,b)>S+2||Math.max(c,d)<-2||Math.min(c,d)>S+2)continue;g.beginPath();g.moveTo(a,c);g.lineTo(b,d);g.stroke()}};
+  const dt=(x,y,r,col)=>{g.fillStyle=col;for(const ox of OFS)for(const oy of OFS){const a=x+ox,c=y+oy;if(a<-r||a>S+r||c<-r||c>S+r)continue;g.beginPath();g.arc(a,c,r,0,7);g.fill()}};
+  const blot=(n,rad,a)=>{for(let i=0;i<n;i++){const x=R()*S,y=R()*S,r=rad*(.5+R()),w=R()<.5;for(const ox of OFS)for(const oy of OFS){const cx=x+ox,cy=y+oy;if(cx<-r||cx>S+r||cy<-r||cy>S+r)continue;const gr=g.createRadialGradient(cx,cy,0,cx,cy,r);gr.addColorStop(0,w?'rgba(255,255,255,'+a+')':'rgba(0,0,0,'+a+')');gr.addColorStop(1,'rgba(128,128,128,0)');g.fillStyle=gr;g.fillRect(cx-r,cy-r,2*r,2*r)}}};
+  const n=m.n;
+  if(n=='Paper'){
+    blot(40,26,.12);
+    for(let i=0;i<1600;i++){const x=R()*S,y=R()*S,l=2+R()*8,a=R()*6.28;ln(x,y,x+Math.cos(a)*l,y+Math.sin(a)*l,.6,R()<.5?'rgba(255,255,255,.3)':'rgba(70,55,30,.22)')}
+    for(let i=0;i<70;i++)dt(R()*S,R()*S,.6+R()*1.2,'rgba(80,60,35,.35)');
+  }else if(n=='Cotton'){
+    blot(30,22,.08);
+    for(let y=0;y<S;y+=5)for(let x=0;x<S;x+=5){
+      const o=((x+y)/5)&1,gr=o?g.createLinearGradient(x,y,x,y+5):g.createLinearGradient(x,y,x+5,y);
+      gr.addColorStop(0,'rgba(0,0,0,.35)');gr.addColorStop(.5,'rgba(255,255,255,.3)');gr.addColorStop(1,'rgba(0,0,0,.35)');
+      g.fillStyle=gr;g.fillRect(x,y,5,5);
+    }
+    for(let i=0;i<300;i++){const x=R()*S,y=R()*S,a=R()*6.28;ln(x,y,x+Math.cos(a)*4,y+Math.sin(a)*4,.5,'rgba(255,255,255,.3)')}
+  }else if(n=='Rubber'){
+    blot(50,18,.1);
+    for(let i=0;i<1200;i++){const r=.6+R()*1.4,x=R()*S,y=R()*S;dt(x,y,r,'rgba(0,0,0,.28)');dt(x-.5,y-.5,r*.6,'rgba(255,255,255,.2)')}
+    for(let i=0;i<5;i++){let x=R()*S,y=R()*S;g.strokeStyle='rgba(0,0,0,.3)';g.lineWidth=.8;g.beginPath();g.moveTo(x,y);for(let k=0;k<6;k++){x+=(R()-.3)*10;y+=(R()-.5)*8;g.lineTo(x,y)}g.stroke()}
+  }else if(n=='Steel'){
+    blot(40,30,.1);
+    for(let i=0;i<700;i++){const x=R()*S,y=R()*S,l=20+R()*90;ln(x,y,x+l,y+(R()-.5)*1.2,.4+R()*.9,R()<.5?'rgba(255,255,255,.2)':'rgba(0,0,0,.22)')}
+    for(let i=0;i<12;i++){const x=R()*S,y=R()*S,l=30+R()*60,a=R()*6.28,dx=Math.cos(a)*l,dy=Math.sin(a)*l;ln(x,y,x+dx,y+dy,.5,'rgba(255,255,255,.35)');ln(x+1,y+1,x+dx+1,y+dy+1,.5,'rgba(0,0,0,.25)')}
+    for(let i=0;i<60;i++)dt(R()*S,R()*S,.5+R()*1.1,'rgba(0,0,0,.3)');
+  }else if(n=='Kevlar'){
+    for(let k=-S;k<=S;k+=4)ln(k,0,k+S,S,2.2,((k/4)&1)?'rgba(255,255,255,.3)':'rgba(0,0,0,.3)');
+    for(let k=0;k<=2*S;k+=8)ln(k,0,k-S,S,1,'rgba(255,255,255,.12)');
+    for(let i=0;i<600;i++){const x=R()*S,y=R()*S;ln(x,y,x+4,y+4,.5,R()<.5?'rgba(255,255,255,.3)':'rgba(0,0,0,.3)')}
+    blot(25,20,.08);
+  }
+  return texTiles[n]=c;
+}
+function tilePat(m){let p=texPats.get(m.n);if(!p){p=ctx.createPattern(tileFor(m),'repeat');texPats.set(m.n,p)}return p}
+function drawSheet(lim){
+  const OX=[0,1,2,3,4].map(()=>new Path2D()),w1=new Path2D(),w2=new Path2D(),NB=24,R=getRamp(),RC=coatM?getRampFor(coatM):null,P=[],PC=[],all=new Path2D(),h1p=new Path2D(),h2p=new Path2D(),gA=new Path2D(),gB=new Path2D(),gC=new Path2D(),gD=new Path2D(),rs1=new Path2D(),rs2=new Path2D(),fz1=new Path2D(),fz2=new Path2D(),ftP=new Path2D(),allC=new Path2D();
+  for(let b=0;b<NB;b++){P.push(new Path2D());PC.push(coatM?new Path2D():null)}
+  if(dm.length<nodes.length)dm=new Float32Array(nodes.length);
+  for(let i=0;i<nodes.length;i++){const n=nodes[i];dm[i]=Math.hypot(n.x-n.rx,n.y-n.ry)}
+  const KB=K(mat),KC=coatM&&mat.sheet?K(coatM):null,hs=.35/cs;
+  const ll=Math.hypot(-.5,-.6,.65),lx=-.5/ll,ly=-.6/ll,lz=.65/ll;
+  const hh=Math.hypot(lx,ly,lz+1),hx=lx/hh,hy=ly/hh,hz=(lz+1)/hh;
+  const dl=dynLight();
+  for(let j=0;j<rows-1;j++)for(let i=0;i<cols-1;i++){
+    const k=j*cols+i,h1=Hl[k],h2=Hl[k+cols],v1=Vl[k],v2=Vl[k+1];
+    if(!(h1.on&&h2.on&&v1.on&&v2.on))continue;
+    const a=nodes[k],b=nodes[k+1],c=nodes[k+cols],d=nodes[k+cols+1];
+    let sx=(dm[k+1]+dm[k+cols+1]-dm[k]-dm[k+cols])*.5*hs+BX[k],sy=(dm[k+cols]+dm[k+cols+1]-dm[k]-dm[k+1])*.5*hs+BY[k];
+    sx=sx>1.2?1.2:sx<-1.2?-1.2:sx;sy=sy>1.2?1.2:sy<-1.2?-1.2:sy;
+    const iv=1/Math.sqrt(sx*sx+sy*sy+1),nx=-sx*iv,ny=-sy*iv,nz=iv;
+    const nl=Math.max(0,nx*lx+ny*ly+nz*lz),nh=Math.max(0,nx*hx+ny*hy+nz*hz);
+    const coated=KC&&h1.co>0&&h2.co>0&&v1.co>0&&v2.co>0;
+    let s=shade(coated?KC:KB,nx,ny,nz,nl,nh);
+    if(dl){
+      const dx=dl.x-a.x,dy=dl.y-a.y,d2=dx*dx+dy*dy+900,q=Math.max(0,(nx*dx+ny*dy+nz*30)/Math.sqrt(d2));
+      s+=dl.I*q*(5000/d2);
+    }
+    let f=s/1.35+(coated?TC[k]:T[k]);f=f<0?0:f>1?1:f;
+    const bi=Math.round(f*(NB-1));
+    quad(coated?PC[bi]:P[bi],a,b,d,c);quad(all,a,b,d,c);if(coated)quad(allC,a,b,d,c);
+    const st=Math.max((h1.st-1)/((lim-1)*h1.k),(v1.st-1)/((lim-1)*v1.k));
+    const Tc=Math.max(h1.fuel>0||v1.fuel>0?950:0,h1.T||20,v1.T||20);
+    if(Tc>420)quad(Tc>1150?gD:Tc>950?gC:Tc>700?gB:gA,a,b,d,c);
+    else if(Tc>60)quad(Tc>200?w2:w1,a,b,d,c);
+    const mxT=Math.max(h1.mx||0,v1.mx||0);
+    if(mat.n=='Steel'){if(mxT>=180)quad(OX[mxT<240?0:mxT<290?1:mxT<340?2:mxT<500?3:4],a,b,d,c)}
+    else if(mxT>=140)quad(OX[mxT<300?0:mxT<450?1:2],a,b,d,c);
+    if(st>.3)quad(st>.7?h2p:h1p,a,b,d,c);
+    const rs=Math.max(h1.rs||0,v1.rs||0);if(rs>.1)quad(rs>.5?rs2:rs1,a,b,d,c);
+    const fz=Math.max(h1.fz||0,v1.fz||0);if(fz>.25)quad(fz>.6?fz2:fz1,a,b,d,c);
+    if(Math.min(h1.k,v1.k)<.7)quad(ftP,a,b,d,c);
+  }
+  ctx.fillStyle=R[NB>>1];ctx.fill(all);
+  for(let b=0;b<NB;b++){ctx.fillStyle=R[b];ctx.fill(P[b]);if(RC){ctx.fillStyle=RC[b];ctx.fill(PC[b])}}
+  ctx.save();ctx.clip(all);ctx.globalCompositeOperation='overlay';ctx.fillStyle=tilePat(mat);ctx.globalAlpha={Paper:.85,Cotton:.7,Rubber:.8,Steel:.8,Kevlar:.4}[mat.n]||.8;ctx.fillRect(0,0,W,H);
+  if(coatM){ctx.restore();ctx.save();ctx.clip(allC);ctx.globalCompositeOperation='overlay';ctx.fillStyle=tilePat(coatM);ctx.fillRect(0,0,W,H)}
+  ctx.restore();
+  const oc=mat.n=='Steel'?['rgba(235,205,95,.32)','rgba(200,140,50,.4)','rgba(130,80,170,.42)','rgba(60,80,200,.45)','rgba(35,40,50,.55)']:['rgba(150,110,60,.3)','rgba(90,60,30,.5)','rgba(25,20,18,.7)'];
+  oc.forEach((c,i)=>{ctx.fillStyle=c;ctx.fill(OX[i])});
+  ctx.fillStyle='rgba(150,70,25,.35)';ctx.fill(rs1);ctx.fillStyle='rgba(115,45,12,.62)';ctx.fill(rs2);
+  ctx.fillStyle='rgba(0,0,0,.16)';ctx.fill(ftP);
+  ctx.fillStyle='rgba(225,242,255,.3)';ctx.fill(fz1);ctx.fillStyle='rgba(235,248,255,.55)';ctx.fill(fz2);
+  ctx.fillStyle='rgba(255,90,54,.4)';ctx.fill(h1p);
+  ctx.fillStyle='rgba(255,60,30,.7)';ctx.fill(h2p);
+  ctx.globalCompositeOperation='lighter';ctx.fillStyle='rgba(255,170,90,.1)';ctx.fill(w1);ctx.fillStyle='rgba(255,120,50,.2)';ctx.fill(w2);ctx.fillStyle='rgba(150,25,8,.45)';ctx.fill(gA);ctx.fillStyle='rgba(235,70,20,.55)';ctx.fill(gB);ctx.fillStyle='rgba(255,150,40,.6)';ctx.fill(gC);ctx.fillStyle='rgba(255,235,170,.75)';ctx.fill(gD);ctx.globalCompositeOperation='source-over';
+  const lw=Math.min(14,2+Math.log2(1+th/mat.th0*2)*2.4);
+  ctx.strokeStyle='#07181d';ctx.fillStyle='#07181d';
+  if(mount=='Frame'){ctx.lineWidth=lw;ctx.strokeRect(24,24,W-48,H-48)}
+  else if(mount=='Curtain'){ctx.fillRect(18,24-lw/2-2,W-36,lw+4)}
+  else{for(const q of [[24,24],[W-24,24],[24,H-24],[W-24,H-24]]){ctx.beginPath();ctx.arc(q[0],q[1],lw+4,0,7);ctx.fill()}}
+}
+function drawStrands(lim,cov){
+  const w=Math.max(1,cs*cov),p=mat.pal,H=new Path2D(),V=new Path2D(),hot=[],n=mat.n;
+  for(const l of links){
+    if(!l.on)continue;
+    const st=(l.st-1)/((lim-1)*l.k);
+    if(st>.04||l.len>l.l0*1.03){hot.push(l,st<0?0:st<1?st:1);continue}
+    const A=nodes[l.a],B=nodes[l.b],q=l.o=='h'?H:V;q.moveTo(A.x,A.y);q.lineTo(B.x,B.y);
+  }
+  const both=(wd,col)=>{ctx.lineWidth=wd;ctx.strokeStyle=col;ctx.stroke(H);ctx.stroke(V)};
+  ctx.lineCap=(n=='Rubber'||n=='Rope')?'round':'butt';
+  if(n=='Rope'){
+    both(w,rgb(p[0]));ctx.setLineDash([w*.5,w*.7]);both(w*.5,rgb(p[2]));ctx.setLineDash([]);
+    ctx.fillStyle=rgb(p[0]);for(const nd of nodes){if(nd.adj.some(q=>q.on)){ctx.beginPath();ctx.arc(nd.x,nd.y,w*.62,0,7);ctx.fill()}}
+  }else if(n=='Cotton'||n=='Kevlar'){
+    ctx.lineWidth=w;ctx.strokeStyle=rgb(p[1]);ctx.stroke(H);ctx.strokeStyle=rgb(p[2]);ctx.stroke(V);
+    both(Math.max(.5,w*.25),'rgba(0,0,0,.28)');
+  }else if(n=='Steel'){
+    both(w*1.5,rgb(p[0]));both(w*.55,rgb(p[2]));
+  }else{
+    both(w,rgb(p[0]));both(w*.72,rgb(p[1]));both(w*.25,'rgba(255,255,255,.4)');
+  }
+  const base=p[1];
+  for(let i=0;i<hot.length;i+=2){
+    const l=hot[i],s=hot[i+1],A=nodes[l.a],B=nodes[l.b];
+    ctx.strokeStyle='rgb('+(base[0]+(255-base[0])*s)+','+(base[1]+(90-base[1])*s)+','+(base[2]+(54-base[2])*s)+')';
+    ctx.lineWidth=w*(1-s*.6)*(1-Math.min(.5,(l.len/l.l0-1)*1.5));
+    ctx.beginPath();ctx.moveTo(A.x,A.y);ctx.lineTo(B.x,B.y);ctx.stroke();
+  }
+  ctx.globalCompositeOperation='lighter';
+  for(const l of links){const T=l.fuel>0?1000:(l.T||20);if(!l.on||T<100)continue;const A=nodes[l.a],B=nodes[l.b],u=Math.min(1,Math.max(0,(T-420)/800)),al=T<420?.12+.25*(T-100)/320:.35+.5*u;ctx.strokeStyle='rgba(255,'+Math.round(60+170*u)+','+Math.round(10+120*u*u)+','+al+')';ctx.lineWidth=w*1.2;ctx.beginPath();ctx.moveTo(A.x,A.y);ctx.lineTo(B.x,B.y);ctx.stroke()}
+  ctx.globalCompositeOperation='source-over';
+  ctx.fillStyle=rgb(p[0]);
+  for(const nd of nodes)if(nd.pin){ctx.beginPath();ctx.arc(nd.x,nd.y,w/2+1.5,0,7);ctx.fill()}
+}
+let shake=0,flash=0,freeze=0,pops=[],lastBig=0,hum=null;
+const vib=p=>{try{navigator.vibrate&&navigator.vibrate(p)}catch(_){}};
+function draw(){
+  ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,W,H);
+  if(shake>.2){ctx.translate((Math.random()-.5)*shake,(Math.random()-.5)*shake);shake*=.86}else shake=0;
+  const s=S(),lim=limit();
+  if(mat.sheet)drawSheet(lim);else drawStrands(lim,mat.a0+(mat.a1-mat.a0)*Math.pow(s/100,1.1));
+  const hl=dynLight();
+  if(hl){const gr=ctx.createRadialGradient(hl.x,hl.y,2,hl.x,hl.y,64);gr.addColorStop(0,'rgba('+hl.c+',.6)');gr.addColorStop(1,'rgba('+hl.c+',0)');ctx.globalCompositeOperation='lighter';ctx.fillStyle=gr;ctx.fillRect(hl.x-64,hl.y-64,128,128);ctx.globalCompositeOperation='source-over'}
+  drawBeads();drawRods();drawFlame();
+  stepParts();drawParts();
+  ctx.textAlign='center';ctx.font='800 30px "Bricolage Grotesque",system-ui,sans-serif';
+  for(const o of pops){o.y-=1.1;o.life-=.022;ctx.fillStyle='rgba('+(o.c||'255,236,200')+','+Math.max(0,o.life)+')';ctx.fillText(o.s,o.x,o.y)}
+  pops=pops.filter(o=>o.life>0);
+  drawFX();
+  if(hotInfo.T>60){ctx.textAlign='center';ctx.font='700 15px "Bricolage Grotesque",system-ui,sans-serif';ctx.fillStyle='rgba(255,236,200,.95)';ctx.fillText(Math.round(hotInfo.T)+'°C',Math.min(W-34,Math.max(34,hotInfo.x)),Math.max(22,hotInfo.y-14))}
+  if(flash>.02){ctx.fillStyle='rgba(255,255,255,'+flash+')';ctx.fillRect(0,0,W,H);flash*=.84}else flash=0;
+}
+function onRip(nb,x,y){
+  ripSound(nb,x);
+  shake+=Math.min(6,nb*.12);
+  if(nb<14)return;
+  const now=performance.now();if(now-lastBig<500)return;lastBig=now;
+  shake+=3;flash=Math.max(flash,.1);freeze=nb>40?4:2;vib(nb>40?25:12);
+  const w={Paper:'RIP!',Cotton:'RRRIP!',Rubber:'SNAP!',Steel:'CRACK!',Kevlar:'SNAP!',Rope:'SNAP!',Net:'SNAP!'}[mat.n];
+  pops.push({x:Math.max(60,Math.min(W-60,x)),y:Math.max(60,y),s:nb>60?'TORN!':w,life:1});
+}
+function updHum(lim){
+  if(!ac)return;
+  if(!hum){initAudio();const s=ac.createBufferSource(),f=ac.createBiquadFilter(),g=ac.createGain();s.buffer=noiseBuf('p');s.loop=true;f.type='bandpass';f.Q.value=3;s.connect(f);f.connect(g);g.gain.value=0;g.connect(dest());s.start();hum={f,g}}
+  let ten=0;
+  if(drag&&tool.k=='grab')for(const n of drag)for(const l of n.adj)if(l.on){const v=(l.st-1)/((lim-1)*l.k);if(v>ten)ten=v}
+  ten=Math.min(1,ten);const t0=ac.currentTime;
+  hum.f.Q.value=mat.n=='Rubber'?8:3;
+  hum.f.frequency.setTargetAtTime(mat.tf*(1+ten*1.2)*(1+(Math.random()-.5)*.12*ten),t0,.03);
+  hum.g.gain.setTargetAtTime(ten>.2?(ten-.2)*.12*(.4+Math.random()*.6):0,t0,.03);
+}
+
+// ===== SAFETY SYSTEM (modelled on OSHA / ANSI Z49.1, ANSI Z87.1, NIOSH noise criteria, ANSI/ISEA 105, NIOSH respirator classes, NFPA 2112, ASTM F2413, ANSI Z89.1) =====
+const SLOTS={
+ head:[['none','No hat'],['hat','Hard hat (Z89.1 Type II)'],['cap','FR welding cap'],['hatl','Hard hat + FR liner']],
+ eyes:[['none','No eye protection'],['gl','Safety glasses (Z87)'],['glp','Safety glasses (Z87+)'],['gog','Splash goggles (Z87+ D3)'],['las','Laser goggles (OD 5+)']],
+ face:[['none','No face gear'],['shield','Face shield (secondary)'],['helm','Welding helmet (auto-darkening)']],
+ ears:[['none','No hearing protection'],['plug','Foam plugs (NRR 29)'],['muff','Ear muffs (NRR 25)'],['both','Plugs + muffs']],
+ resp:[['none','No respirator'],['n95','N95 mask'],['p100','Half-mask P100'],['combo','Half-mask OV/AG/P100'],['papr','PAPR hood (OV/AG/P100)']],
+ hands:[['none','Bare hands'],['leather','Welding gauntlets (leather)'],['a4','Cut-resistant A4'],['a7','Cut-resistant A7'],['nit','Nitrile chemical gloves'],['aramid','Heat-resistant aramid'],['wgl','Heavy welding gauntlets']],
+ body:[['street','Street clothes (cotton)'],['synth','Synthetic jacket'],['fr','FR coveralls (NFPA 2112)'],['leath','Welding leathers'],['apron','Chemical apron'],['frl','FR coveralls + leather apron']],
+ legs:[['none','No chaps'],['chaps','Chainsaw chaps']],
+ feet:[['shoe','Sneakers'],['boot','Safety boots (I/75 C/75)'],['mt','Metatarsal boots (Mt/75)'],['spat','Boots + leather spats']]
+};
+const SLOTN={head:'Head',eyes:'Eyes',face:'Face',ears:'Hearing',resp:'Lungs',hands:'Hands',body:'Body',legs:'Legs',feet:'Feet'};
+const GP={
+ hat:{headImp:.85,headHeat:.3},cap:{headImp:.05,headHeat:.85},hatl:{headImp:.85,headHeat:.9},
+ gl:{eSpark:.8,eChem:.2,eBlast:.3},
+ glp:{eSpark:.95,eChem:.25,eBlast:.5},
+ gog:{eSpark:.97,eChem:.95,eBlast:.6},
+ las:{eSpark:.9,eBlast:.3,eChem:.2,laser:.98},
+ shield:{eSpark:.5,eChem:.5,eBlast:.3},
+ helm:{eSpark:.6,eChem:.4,eBlast:.4},
+ papr:{part:.9999,org:.9,acid:.9,co:0},n95:{part:.95,org:.05,acid:0,co:0},p100:{part:.9997,org:0,acid:0,co:0},combo:{part:.9997,org:.9,acid:.9,co:0},
+ leather:{cut:2,heat:.85,maxT:350,chem:.3,cold:.5},wgl:{cut:3,heat:.93,maxT:480,chem:.3,cold:.5},a4:{cut:4,heat:.05,maxT:120,chem:.2,cold:.2},a7:{cut:7,heat:.3,maxT:200,chem:.1,cold:.2},nit:{cut:1,heat:0,maxT:60,chem:.95,cold:.1},aramid:{cut:5,heat:.95,maxT:500,chem:.1,cold:.5},
+ street:{burn:.2,uv:.35,cutB:.05,chemB:0,blastB:0,flam:1},synth:{burn:0,uv:.6,cutB:.05,chemB:.1,blastB:0,flam:1.5,melt:1},fr:{burn:.88,uv:.95,cutB:.15,chemB:.3,blastB:.4},leath:{burn:.92,uv:.99,cutB:.45,chemB:.5,blastB:.5},apron:{burn:.1,uv:.4,cutB:.1,chemB:.95,blastB:0,flam:.5},frl:{burn:.94,uv:.99,cutB:.3,chemB:.4,blastB:.5},
+ shoe:{crush:0,molten:0,blastF:0},boot:{crush:.9,molten:.5,blastF:.2},mt:{crush:.95,molten:.7,blastF:.3},spat:{crush:.9,molten:.95,blastF:.3}
+};
+const VL={eyes:'Eyes',cornea:'Cornea',hands:'Hands',body:'Body',head:'Head',feet:'Feet',ears:'Hearing',lungs:'Lungs'};
+const NOISE={Welder:85,'Plasma cutter':100,Laser:70,Blowtorch:80,'Angle grinder':100,Chainsaw:110,Drill:95,Saw:90,Shredder:105,Acid:60,Freezer:80,Magnet:60,Patch:70};
+const IMPDB={Hammer:110,Sledgehammer:125,Pickaxe:115,Dynamite:160};
+const SPARKR={Welder:.03,'Plasma cutter':.05,'Angle grinder':.08,Chainsaw:.04,Drill:.03,Saw:.02,Shredder:.03};
+const HEATR={Blowtorch:.06,Welder:.03,'Plasma cutter':.04,'Angle grinder':.01};
+const BODYR={'Angle grinder':.03,Welder:.04,'Plasma cutter':.05,Blowtorch:.02};
+const NEED={Knife:3,'Box cutter':3,Scissors:2,Shears:4,'Wire cutters':3,'Bolt cutters':5,Saw:5,Drill:3,Chainsaw:9,'Angle grinder':5,Shredder:9};
+const CUTR={Knife:.12,'Box cutter':.12,Scissors:.1,Shears:.14,'Wire cutters':.14,'Bolt cutters':.14,Saw:.2,Drill:.2,Chainsaw:.3,'Angle grinder':.3,Shredder:.25};
+const EY=['glp','gog'],GL=['leather','aramid','a7','wgl'];
+const REQ={
+ Knife:[['hands',['a4','a7','aramid'],'Cut gloves A3+']],'Box cutter':[['hands',['a4','a7','aramid'],'Cut gloves A3+']],Scissors:[['hands',['leather','a4','a7','aramid'],'Cut gloves A2+']],
+ Shears:[['hands',['a4','a7','aramid'],'Cut gloves A4+'],['eyes',EY,'Z87+ eye protection']],'Wire cutters':[['hands',['a4','a7','aramid'],'Cut gloves A3+'],['eyes',EY,'Z87+ eye protection']],'Bolt cutters':[['hands',['a7','aramid'],'Cut gloves A5+'],['eyes',EY,'Z87+ eye protection']],
+ Saw:[['eyes',EY,'Z87+ eye protection'],['hands',['a7','aramid'],'Cut gloves A5+']],Drill:[['eyes',EY,'Z87+ eye protection'],['ears',['plug','muff','both'],'Hearing protection'],['hands',['leather','a4','a7','aramid'],'Gloves']],
+ Chainsaw:[['eyes',EY,'Z87+ eye protection'],['face',['shield'],'Face shield'],['ears',['muff','both'],'Ear muffs'],['hands',GL,'Gloves'],['legs',['chaps'],'Chainsaw chaps'],['feet',['mt'],'Metatarsal boots'],['head',['hat','hatl'],'Hard hat']],
+ 'Angle grinder':[['eyes',EY,'Z87+ eye protection'],['face',['shield'],'Face shield'],['ears',['plug','muff','both'],'Hearing protection'],['hands',GL,'Gloves'],['body',['fr','leath','frl'],'FR clothing'],['resp',['n95','p100','combo','papr'],'Dust respirator']],
+ Laser:[['eyes',['las'],'Laser goggles (OD-rated)']],
+ 'Plasma cutter':[['eyes',EY,'Z87+ eye protection'],['face',['helm'],'Welding helmet'],['ears',['plug','muff','both'],'Hearing protection'],['hands',['leather','aramid','wgl'],'Welding gloves'],['body',['fr','leath','frl'],'FR clothing'],['resp',['p100','combo','papr'],'P100 respirator'],['feet',['boot','mt','spat'],'Safety boots']],
+ Shredder:[['eyes',EY,'Z87+ eye protection'],['face',['shield'],'Face shield'],['ears',['muff','both'],'Ear muffs'],['hands',['a7','aramid'],'Cut gloves A5+'],['resp',['p100','combo','papr'],'P100 respirator'],['head',['hat','hatl'],'Hard hat']],
+ Freezer:[['eyes',['gog','glp'],'Goggles or glasses'],['hands',['nit','aramid','leather'],'Insulated gloves']],
+ Welder:[['eyes',EY,'Z87+ eye protection'],['face',['helm'],'Welding helmet'],['hands',['leather','aramid','wgl'],'Welding gloves'],['body',['fr','leath','frl'],'FR clothing'],['resp',['p100','combo','papr','n95'],'Fume respirator'],['feet',['boot','mt','spat'],'Safety boots']],
+ Blowtorch:[['eyes',EY,'Z87+ eye protection'],['face',['helm'],'Filter shade 5+'],['hands',['leather','aramid','wgl'],'Heat gloves'],['body',['fr','leath','frl'],'FR clothing'],['resp',['n95','p100','combo','papr'],'Smoke respirator']],
+ Acid:[['eyes',['gog'],'Splash goggles (D3)'],['face',['shield'],'Face shield'],['hands',['nit'],'Nitrile gloves'],['body',['apron','fr'],'Chemical apron'],['resp',['combo','papr'],'OV/AG respirator'],['feet',['boot','mt','spat'],'Safety boots']],
+ Hammer:[['eyes',EY,'Z87+ eye protection'],['hands',['leather','a4','a7','aramid'],'Gloves']],
+ 'Chipping hammer':[['eyes',EY,'Z87+ eye protection'],['hands',['leather','a4','a7','aramid'],'Gloves']],
+ Sledgehammer:[['eyes',EY,'Z87+ eye protection'],['hands',['leather','a4','a7','aramid'],'Gloves'],['ears',['plug','muff','both'],'Hearing protection'],['feet',['boot','mt','spat'],'Safety boots'],['head',['hat','hatl'],'Hard hat']],
+ Pickaxe:[['eyes',EY,'Z87+ eye protection'],['hands',['leather','a4','a7','aramid'],'Gloves'],['feet',['boot','mt','spat'],'Safety boots'],['head',['hat','hatl'],'Hard hat']],
+ Dynamite:[['eyes',EY,'Z87+ eye protection'],['face',['shield','helm'],'Face shield'],['ears',['both'],'Plugs + muffs'],['hands',['leather','aramid','wgl'],'Heat gloves'],['body',['fr','leath','frl'],'FR clothing'],['head',['hat','hatl'],'Hard hat'],['feet',['boot','mt','spat'],'Safety boots']]
+};
+const BRIEF={
+ Welder:'Arc welding gives off intense UV and IR light. OSHA/ANSI Z49.1 minimum shade is about 7 to 11 depending on current. Safety glasses go under the helmet. Wear FR clothing or leathers, welding gauntlets and a particulate respirator for metal fume. Arc eye shows up hours later and heals in a day or two.',
+ 'Plasma cutter':'Plasma cutting needs about shade 8 or 9 by OSHA (AWS lists a wider range), is very loud (roughly 90 to 120 dBA) and gives off metal fume.',
+ Laser:'Laser light needs eyewear rated for its wavelength and optical density. Welding lenses and ordinary glasses are not laser eyewear. A stray beam can burn the retina for good.',
+ Blowtorch:'Oxy-fuel and brazing need a shade 3 to 6 filter. Smoke contains carbon monoxide, and particulate filters do not stop it.',
+ 'Angle grinder':'Grinders run around 95 to 105 dBA. A face shield is secondary protection and goes over glasses. Sparks ignite street clothes and melt synthetics onto skin.',
+ Chainsaw:'Chainsaws run 105 to 115 dBA and cut through every glove (A9 is only the test ceiling). Chaps, metatarsal boots and a hard hat matter most.',
+ Shredder:'Shredders are loud, throw debris and make fine dust. Gloves cannot protect your hands from the blades.',
+ Drill:'Drills throw chips and are loud. Keep loose sleeves and gloves clear of the bit.',
+ Knife:'Cut gloves are rated A1 to A9 by the grams of force needed to cut through: A1 is 200 g and A9 is 6000 g or more. A utility knife needs about A3.',
+ Acid:'Splash goggles marked D3 are needed because ordinary glasses leave gaps. Nitrile gloves, an apron and OV/AG cartridges help; a particulate filter does not stop acid gas.',
+ Hammer:'Z87+ glasses stop high-velocity chips; basic Z87 only covers lighter impact.',
+ Sledgehammer:'Safety boots are tested to 75 ft-lb impact and 2500 lb compression, and metatarsal boots add protection over the instep. Impact noise is far above 85 dBA.',
+ Pickaxe:'Chips fly off hard metal. Z87+ eye protection, a hard hat and safety boots.',
+ Dynamite:'Blast noise can exceed 140 dB peak. Wear plugs and muffs together, stay back, and cover your eyes, head and body.',
+ Freezer:'Cold burns skin fast. Insulated gloves help, and propellant vapor is an organic vapor.',
+ Welder2:''
+};
+function freshV(){return{eyes:100,cornea:100,hands:100,body:100,head:100,feet:100,ears:100,lungs:100}}
+let sel={head:'none',eyes:'none',face:'none',ears:'none',resp:'none',hands:'none',body:'street',legs:'none',feet:'shoe'},lensShade=10,amps=120,gender='m',hazOn=true;
+let V=freshV(),fl=0,hf=0,cough=0,inj=null,panelOpen=false,lastWarn=0,lastArc={x:0,y:0},toolSkid=false,curBlur=0;
+let noiseDose=0,earsPerm=0,arcDelay=0,arcSym=0,igniteT=0,heatAcc=0,curDb=60,burnCount=0,miss=[],compliant=true,lastSlot=null;
+const acc={},log={arcSec:0,arcUnder:0,peakDb:0,sparks:0,cuts:0,burns:0,fume:0};
+try{const s=JSON.parse(localStorage.getItem('nr-safety2')||'{}');if(s.sel)sel=Object.assign(sel,s.sel);if(s.g)gender=s.g;if(s.sh)lensShade=s.sh;if(s.am)amps=s.am;if(s.h===false)hazOn=false}catch(_){}
+const saveSafety=()=>{try{localStorage.setItem('nr-safety2',JSON.stringify({sel,g:gender,sh:lensShade,am:amps,h:hazOn}))}catch(_){}};
+function P(key){let k=1;for(const s in sel){const g=GP[sel[s]];if(g&&g[key])k*=1-g[key]}return 1-k}
+const glove=()=>GP[sel.hands]||{cut:0,heat:0,maxT:0,chem:0,cold:0};
+const bodyG=()=>GP[sel.body]||GP.street;
+const attenDb=()=>sel.ears=='plug'?14.5:sel.ears=='muff'?18.75:sel.ears=='both'?23.75:0;
+const fumeP=t=>{const g=GP[sel.resp];return g?(g[t]||0):0};
+const curShade=()=>sel.face=='helm'?lensShade:0;
+function reqShadeFor(n){if(n=='Welder')return amps<60?7:amps<160?8:amps<250?10:11;if(n=='Plasma cutter')return amps<300?8:9;if(n=='Blowtorch')return FUEL[TORCH.fuel].oxy?(TORCH.tip<=2?3:TORCH.tip<=4?4:TORCH.tip<=6?5:6):0;if(n=='Dynamite')return 5;return 0}
+function arcFactor(n){const rq=reqShadeFor(n);if(!rq)return 0;const rel=Math.pow(2,Math.max(0,rq-curShade()));return Math.min(1,(rel-1)/15)}
+function missingReq(T){
+  const out=[],rq=REQ[T.n]||[];
+  for(const r of rq)if(!r[1].includes(sel[r[0]]))out.push(r[2]);
+  const rs=reqShadeFor(T.n);
+  if(rs&&rs>=5&&sel.face=='helm'&&lensShade<rs&&REQ[T.n]&&REQ[T.n].some(r=>r[0]=='face'&&r[1].includes('helm')))out.push('Shade '+rs+' or darker');
+  return out;
+}
+function recompute(){miss=missingReq(tool);compliant=!miss.length}
+const WARN={arc:'Arc flash! Your lens shade is too light for this arc.',spark:'Sparks and chips! Wear Z87+ glasses or goggles.',laser:'Laser light! Only wavelength-rated goggles protect the retina.',chemE:'Chemical splash! Use sealed splash goggles.',burn:'Burning your hands! Wear heat-rated gloves.',uv:'UV burns bare skin. Cover up with FR clothing or leathers.',ignite:'Your clothes caught fire! Only FR clothing or leathers resist it.',cut:'Blade cut! Wear gloves rated for this tool.',cutL:'Chainsaw cut! Wear chainsaw chaps.',noise:'Too loud! Wear hearing protection.',fume:'Breathing fumes! Check your respirator filter type.',co:'Carbon monoxide! Particulate filters do not stop it.',chemH:'Chemicals on your hands! Wear nitrile gloves.',chemB:'Chemical splash on your body! Wear an apron.',cold:'Frostbite risk! Wear insulated gloves.',crush:'Crushed foot! Wear safety boots.',head:'Head strike! Wear a hard hat.',molten:'Molten metal on your foot! Wear safety boots.',blast:'Blast! Protect your eyes, head and body.',hsp:'Sparks are burning your hair and scalp! Wear an FR cap or hard hat liner.'};
+const INJT={eyes:['Eye injury: work stopped','Flying chips, chemicals, lasers and blasts can damage eyes for good. Z87+ glasses stop chips, D3 goggles stop splash, and only rated laser goggles stop a laser.'],cornea:['Severe arc eye: work stopped','UV from an arc burns the surface of the eye. Pain starts hours later and usually clears in 1 to 2 days. A correct welding shade prevents it. Use Rest eyes to recover.'],hands:['Hand injury: work stopped','Heat, cuts and cold hit your hands first. Match the glove to the hazard: cut level, heat rating or chemical resistance.'],body:['Body injury: work stopped','Sparks, UV, chemicals and blasts hurt the body. Non-FR clothing can ignite and melt onto skin. FR clothing or leathers help.'],head:['Head injury: work stopped','Falling or flying debris hits the head. A hard hat (ANSI Z89.1) reduces the force.'],feet:['Foot injury: work stopped','Dropped tools and molten metal hit feet. ASTM F2413 safety boots are tested for impact and compression.'],ears:['Hearing damage: work stopped','Over about 85 dBA, every 3 dB halves the safe time (NIOSH). Hearing loss from noise is permanent. Ear muffs or plugs cut the level.'],lungs:['Fume injury: work stopped','Welding fume, smoke, solvent vapor and acid gas each need the right filter. Particulate filters do not stop gases or carbon monoxide.']};
+function warn(k){const n=performance.now();if(n-lastWarn>3000&&WARN[k]){lastWarn=n;say(WARN[k])}}
+function popAt(s,c){pops.push({x:Math.max(50,Math.min(W-50,ptr.x)),y:Math.max(50,ptr.y-20),s,life:1,c:c||'255,120,100'})}
+function hurt(v,d,w){
+  if(!hazOn||inj||!(d>0))return;
+  if(w&&d>.004)warn(w);
+  V[v]=Math.max(0,V[v]-d);
+  if(v=='hands'||v=='body'||v=='feet'||v=='head')hf=Math.min(.6,hf+d*.02);
+  acc[v]=(acc[v]||0)+d;
+  if(acc[v]>=4){popAt('-'+Math.round(acc[v])+' '+VL[v]);acc[v]=0}
+  if(V[v]<=0)injure(v);
+}
+function doCough(){shake+=4;if(ac){hiss('bandpass',700,2,.12,.3,'p');setTimeout(()=>{if(ac)hiss('bandpass',650,2,.1,.25,'p')},160)}}
+function hotNear(){let m=20;for(const l of hotL){if(!l.on||!(l.T>m))continue;const A=nodes[l.a],B=nodes[l.b];if(Math.abs((A.x+B.x)/2-ptr.x)<70&&Math.abs((A.y+B.y)/2-ptr.y)<70)m=l.T}return m}
+function noiseCalc(){
+  const T=tool.n;
+  if(down&&NOISE[T]&&(MACH.includes(T)||T=='Patch')){let L=NOISE[T];if(!(toolLoad>0))L-=8;if(T=='Angle grinder'&&toolLoad>0&&mat.n=='Steel')L+=5;curDb=L}
+  else curDb=60;
+  const Le=curDb-attenDb();
+  if(curDb>log.peakDb)log.peakDb=curDb;
+  if(Le>=80){const allowed=28800/Math.pow(2,(Le-85)/3);noiseDose+=100*(TS/60)/allowed;if(curDb-attenDb()>=85)warn('noise')}
+}
+const TS=45;
+function updEarsSoft(){V.ears=Math.max(0,100-earsPerm-.12*Math.min(noiseDose,100)-.3*Math.max(0,noiseDose-100))}
+function updEars(){V.ears=Math.max(0,100-earsPerm-.12*Math.min(noiseDose,100)-.3*Math.max(0,noiseDose-100));if(V.ears<=0&&!inj&&hazOn)injure('ears')}
+function hazardTick(){
+  fl*=.992;hf*=.9;
+  if(V.cornea<100)V.cornea=Math.min(100,V.cornea+.012);
+  if(arcDelay>0){arcDelay--;if(arcDelay==0)arcSym=Math.max(arcSym,(100-V.cornea)/100)}
+  if(arcSym>0)arcSym=Math.max(0,arcSym-.0004);
+  if(igniteT>0){igniteT--;if(hazOn&&!inj)hurt('body',.04*(bodyG().melt?1.5:1),'ignite')}
+  heatAcc*=.995;
+  noiseCalc();updEars();
+  if(!hazOn||inj||!down)return;
+  const T=tool.n,working=toolLoad>0,steel=mat.n=='Steel',gl=glove(),b=bodyG();
+  if(working){
+    if(T=='Welder'||T=='Plasma cutter'||T=='Blowtorch'){
+      const f=arcFactor(T),ai=(T=='Welder'||T=='Plasma cutter')?amps/120:1;
+      log.arcSec+=1/60;
+      if(f>0){hurt('cornea',.5*f*ai,'arc');fl=Math.min(1,fl+f*ai*.05);lastArc={x:ptr.x,y:ptr.y};log.arcUnder+=1/60;if(V.cornea<80&&arcDelay<=0&&arcSym<=0)arcDelay=480}
+      if(T!='Blowtorch')hurt('body',.02*ai*(1-b.uv),'uv');
+    }
+    if(T=='Laser'){hurt('eyes',.06*(1-P('laser')),'laser')}
+    const sp=(SPARKR[T]||(T=='Blowtorch'&&TORCH.cut?.05:0))*(steel||T=='Welder'||T=='Plasma cutter'?1:.15);
+    if(sp){const d=sp*(1-P('eSpark'));hurt('eyes',d,'spark');if(d>.001)log.sparks+=d;hurt('head',sp*.5*(1-P('headHeat')),'hsp')}
+    if(T=='Acid'){hurt('eyes',.06*(1-P('eChem')),'chemE');hurt('hands',.06*(1-(gl.chem||0)),'chemH');hurt('body',.02*(1-b.chemB),'chemB')}
+    if(T=='Freezer')hurt('hands',.06*(1-(gl.cold||0)),'cold');
+    const br=(BODYR[T]||0)*(steel||T=='Blowtorch'?1:.3);
+    if(br){hurt('body',br*(1-b.burn),'burn');heatAcc+=br*(b.flam||0)*(1-b.burn);if(heatAcc>.9&&igniteT<=0&&b.flam){igniteT=300;heatAcc=0;warn('ignite')}}
+    // fumes: particulate, organic vapour, acid gas, carbon monoxide
+    const bc=Math.min(1,burnCount/50),flam=mat.fl>.3&&mat.n!='Rubber',plastic=mat.n=='Rubber'||mat.n=='Net'||mat.n=='Kevlar';
+    let part=0,org=0,acid=0,co=0;
+    if((T=='Welder'||T=='Plasma cutter')&&steel)part+=.05;
+    if(['Saw','Drill','Chainsaw','Angle grinder','Shredder'].includes(T))part+=steel?.03:.02;
+    if(T=='Blowtorch'||T=='Laser'||T=='Plasma cutter'){part+=.04*bc;co+=.02*bc}
+    if(plastic&&(T=='Blowtorch'||T=='Laser'||T=='Plasma cutter'||T=='Angle grinder')&&hotInfo.T>100)org+=.05;
+    if(T=='Acid')acid+=.06;
+    if(T=='Freezer')org+=.02;
+    const dl=part*(1-fumeP('part'))+org*(1-fumeP('org'))+acid*(1-fumeP('acid'))+co*(1-fumeP('co'));
+    if(dl>0){hurt('lungs',dl,co>0&&dl<=co*1.2?'co':'fume');log.fume+=dl;cough+=dl;if(cough>2){cough=0;doCough()}}
+  }
+  // hands: heat near the pointer and cuts
+  const nt=hotNear();
+  if(nt>80){
+    let hp=gl.heat||0;if(nt>(gl.maxT||0))hp*=.3;
+    const meltBoost=(gl.maxT&&nt>gl.maxT&&(gl.heat||0)<.35)?1.3:1;
+    const hr=(HEATR[T]||0)*(T=='Blowtorch'?torchPow():1)*(working?1:0)+Math.min(4,Math.max(0,(nt-60)/300))*.12;
+    hurt('hands',hr*(1-hp)*meltBoost,'burn');log.burns+=hr*(1-hp);
+  }
+  if(toolSkid&&NEED[T]){
+    const gc=gl.cut||0,need=NEED[T],p=gc>=need?.92:.8*gc/need;
+    hurt('hands',(CUTR[T]||.1)*(1-p),'cut');log.cuts++;
+    if(T=='Chainsaw')hurt('body',.2*(1-(sel.legs=='chaps'?.95:0))*(1-(b.cutB||0)),'cutL');
+  }
+}
+function hazardEvent(T){
+  const pk=IMPDB[T.n];
+  if(pk){const Le=pk-attenDb(),allowed=28800/Math.pow(2,(Le-85)/3);noiseDose+=Math.min(1500,100*.1/allowed)}
+  if(!hazOn||inj){updEarsSoft();return}
+  const steel=mat.n=='Steel',gl=glove(),b=bodyG();
+  if(T.b){
+    const f=Math.min(1,(Math.pow(2,Math.max(0,5-curShade()))-1)/15);
+    hurt('cornea',30*f,'arc');fl=Math.min(1,fl+f*.9);lastArc={x:ptr.x,y:ptr.y};if(f>0&&V.cornea<80)arcDelay=480;
+    hurt('eyes',15*(1-P('eBlast')),'blast');hurt('body',30*(1-b.blastB),'blast');hurt('head',25*(1-P('headImp')),'blast');hurt('feet',15*(1-P('blastF')),'blast');hurt('hands',8*(1-(gl.heat||0)),'burn');
+  }else{
+    if(steel)hurt('eyes',(T.n=='Sledgehammer'?2:T.n=='Pickaxe'?1.5:1)*(1-P('eSpark')),'spark');
+    if(Math.random()<(T.n=='Sledgehammer'?.08:T.n=='Pickaxe'?.06:.03))hurt('feet',20*(1-P('crush')),'crush');
+    if(steel&&T.n!='Hammer'&&Math.random()<.3)hurt('head',3*(1-P('headImp')),'head');
+  }
+  updEars();
+}
+const trembleAmt=()=>hazOn&&V.hands<70?(70-V.hands)/70*10:0;
+function drawFX(){
+  if(sel.face=='helm'){
+    const rq=reqShadeFor(tool.n),arcOn=down&&toolLoad>0&&rq>0&&HZARC.includes(tool.n);
+    ctx.fillStyle='rgba(10,45,10,'+(arcOn?Math.min(.9,.3+.05*lensShade):.12)+')';ctx.fillRect(0,0,W,H);
+  }else if(sel.eyes=='las'){ctx.fillStyle='rgba(120,20,20,.1)';ctx.fillRect(0,0,W,H)}
+  const ev=1-V.eyes/100;
+  if(ev>.15){const g=ctx.createRadialGradient(W/2,H/2,Math.min(W,H)*.15,W/2,H/2,Math.max(W,H)*.65);g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(1,'rgba(0,0,0,'+Math.min(.92,ev*1.1)+')');ctx.fillStyle=g;ctx.fillRect(0,0,W,H)}
+  if(fl>.02){
+    ctx.fillStyle='rgba(255,255,255,'+Math.min(.95,fl*1.2)+')';ctx.fillRect(0,0,W,H);
+    ctx.fillStyle='rgba(170,110,255,'+fl*.25+')';ctx.fillRect(0,0,W,H);
+    const g=ctx.createRadialGradient(lastArc.x,lastArc.y,2,lastArc.x,lastArc.y,70);g.addColorStop(0,'rgba(20,0,40,'+fl*.8+')');g.addColorStop(1,'rgba(20,0,40,0)');ctx.fillStyle=g;ctx.fillRect(lastArc.x-70,lastArc.y-70,140,140);
+  }
+  if(arcSym>.02){ctx.fillStyle='rgba(255,110,110,'+arcSym*.16+')';ctx.fillRect(0,0,W,H)}
+  if(hf>.02){ctx.fillStyle='rgba(255,30,10,'+hf*.35+')';ctx.fillRect(0,0,W,H)}
+  const bl=Math.min(6,fl*6+ev*5+arcSym*4);
+  if(Math.abs(bl-curBlur)>.4){curBlur=bl;cv.style.filter=bl>.4?'blur('+bl.toFixed(1)+'px)'+(arcSym>.1?' brightness(1.15)':''):''}
+}
+const HZARC=['Welder','Plasma cutter','Blowtorch'];
+function updPPEAudio(){
+  if(!ac||!master||!muffle)return;
+  const t0=ac.currentTime,A=attenDb(),tin=Math.min(1,noiseDose/300);
+  muffle.frequency.setTargetAtTime(A>15?2400:A>0?3200:(tin>.3?3200:20000),t0,.1);
+  master.gain.setTargetAtTime(.9*Math.pow(10,-A/60)*(.45+.55*V.ears/100),t0,.1);
+  if(!tinO&&tin>.05){tinO={o:ac.createOscillator(),g:ac.createGain()};tinO.o.frequency.value=4200;tinO.o.connect(tinO.g);tinO.g.gain.value=0;tinO.g.connect(master);tinO.o.start()}
+  if(tinO)tinO.g.gain.setTargetAtTime(Math.min(.04,tin*.04),t0,.2);
+}
+function injure(v){
+  inj=v;rel();panelOpen=true;
+  document.getElementById('inj-t').textContent=INJT[v][0];
+  document.getElementById('inj-p').textContent=INJT[v][1];
+  document.getElementById('inj-g').textContent=miss.length?'Missing for the '+tool.n+': '+miss.join(', ')+'.':'';
+  document.getElementById('inj').hidden=false;
+}
+document.getElementById('inj-b').onclick=()=>{V=freshV();fl=0;hf=0;inj=null;arcSym=0;arcDelay=0;igniteT=0;noiseDose=Math.min(noiseDose,100);earsPerm=Math.min(earsPerm,60);panelOpen=false;document.getElementById('inj').hidden=true;document.getElementById('safety').hidden=true;cv.style.filter='';curBlur=0};
+// ----- worker figure
+function lensCol(s){const t=(s-5)/8;return 'rgb('+Math.round(70-55*t)+','+Math.round(150-120*t)+','+Math.round(70-55*t)+')'}
+const FIG={"f":{"path":"M113.7 4.0 L105.6 4.0 L98.8 5.3 L96.1 6.7 L90.7 12.8 L85.3 24.9 L80.6 53.2 L79.3 55.9 L75.2 60.0 L69.2 62.7 L65.8 66.1 L64.4 69.4 L64.4 73.5 L63.1 77.5 L62.4 97.1 L59.7 110.6 L59.0 119.4 L53.6 130.2 L46.2 153.8 L40.2 165.2 L35.4 170.0 L30.0 172.7 L22.6 180.1 L23.3 181.4 L25.3 181.4 L28.7 179.4 L30.7 180.7 L30.7 183.4 L28.0 188.8 L26.0 196.9 L28.7 197.6 L31.4 200.3 L32.7 199.0 L34.8 199.0 L37.5 194.9 L39.5 193.6 L42.2 195.6 L42.8 194.9 L46.9 177.4 L46.9 173.3 L65.8 140.9 L71.2 129.5 L73.2 120.7 L75.2 118.7 L77.9 122.1 L77.9 128.1 L73.2 137.6 L67.1 154.4 L66.5 163.9 L63.8 178.0 L63.8 190.9 L73.2 228.0 L74.6 240.1 L74.6 251.6 L72.5 265.7 L73.2 281.3 L75.2 294.1 L80.6 308.9 L81.3 313.6 L80.0 325.1 L75.2 331.2 L67.8 335.9 L67.1 339.3 L69.2 341.3 L75.9 342.7 L80.0 342.7 L84.7 340.0 L86.0 335.9 L91.4 331.9 L91.4 323.1 L92.8 318.4 L90.7 315.0 L90.7 300.8 L94.1 280.6 L94.1 273.2 L92.1 258.3 L96.8 242.1 L96.8 207.7 L97.5 201.7 L99.5 199.6 L102.2 202.3 L102.2 206.4 L103.6 210.4 L104.2 244.8 L107.6 255.0 L106.9 285.3 L109.6 300.8 L109.6 310.9 L106.9 317.7 L106.9 331.9 L108.3 333.9 L107.6 339.3 L111.7 343.3 L120.4 343.3 L125.2 340.6 L124.5 336.6 L119.1 330.5 L117.7 324.4 L119.1 321.7 L118.4 318.4 L119.1 309.6 L124.5 294.8 L127.8 277.9 L127.8 265.7 L125.8 253.6 L126.5 232.7 L130.5 211.1 L136.6 188.8 L136.6 178.0 L133.2 155.1 L129.9 146.3 L127.8 137.6 L124.5 130.2 L124.5 122.1 L125.2 118.7 L127.2 116.7 L129.2 118.7 L131.2 127.5 L138.6 143.0 L155.5 171.3 L156.2 178.7 L157.5 181.4 L160.2 194.2 L163.6 192.9 L165.6 194.2 L167.7 197.6 L170.3 197.6 L172.4 199.0 L176.4 194.9 L176.4 192.9 L171.7 180.1 L173.7 178.0 L177.1 180.1 L179.8 180.1 L179.8 178.7 L172.4 171.3 L166.3 167.9 L163.6 165.2 L154.8 148.4 L150.1 131.5 L144.7 121.4 L143.4 116.7 L141.3 97.1 L142.7 85.0 L141.3 70.8 L137.3 66.1 L133.2 64.0 L129.9 59.3 L125.2 43.8 L125.2 31.0 L123.1 25.6 L123.1 16.8 L117.7 6.7Z","cx":100.0,"top":4.0,"bot":344.0,"headCx":105.5,"headR":21.8,"headCy":25.8,"neckY":48.5,"shoulderY":66.9,"waistY":133.2,"crotchY":177.4,"kneeY":248.8,"ankleY":325.3,"legOuter":28.3,"handBottom":205.0,"chestHalf":40.5,"pts":153.0,"width":157.2,"headHalf":22.3},"m":{"path":"M98.9 4.0 L88.9 7.6 L84.6 13.3 L83.9 30.5 L86.7 37.0 L86.7 39.1 L89.6 43.5 L88.9 47.0 L85.3 50.6 L75.3 57.1 L70.2 59.2 L67.4 59.2 L61.6 62.1 L57.3 67.1 L53.7 75.7 L52.3 84.3 L52.3 92.9 L50.1 98.0 L47.3 114.5 L48.0 123.8 L43.7 137.4 L43.7 153.9 L42.3 162.5 L42.3 172.6 L43.0 173.3 L42.3 188.3 L43.7 192.6 L50.1 201.3 L53.0 203.4 L55.2 203.4 L55.2 202.0 L50.9 197.7 L49.4 193.4 L49.4 190.5 L50.9 189.1 L54.5 192.6 L55.9 191.9 L54.5 187.6 L54.5 179.7 L52.3 173.3 L52.3 169.0 L60.9 141.7 L62.3 132.4 L62.3 120.9 L65.2 113.0 L68.1 110.9 L70.2 113.7 L70.9 118.8 L71.7 146.7 L69.5 157.5 L66.6 188.3 L69.5 214.9 L73.8 233.5 L73.8 252.2 L70.9 262.2 L70.9 273.0 L74.5 291.6 L83.9 318.2 L83.9 331.1 L80.3 335.4 L74.5 339.0 L74.5 341.8 L78.8 343.3 L91.0 343.3 L93.9 341.8 L95.3 339.7 L95.3 329.7 L93.2 318.9 L93.2 288.8 L94.6 284.5 L94.6 267.2 L91.8 254.3 L91.8 250.0 L95.3 238.6 L97.5 204.1 L98.9 202.0 L101.1 202.0 L102.5 204.1 L104.7 238.6 L108.2 250.0 L108.2 254.3 L105.4 267.2 L105.4 284.5 L106.8 288.8 L106.8 318.9 L104.7 329.7 L104.7 339.7 L108.2 343.3 L120.4 343.3 L125.5 341.8 L125.5 339.0 L119.7 335.4 L116.1 331.1 L116.1 318.2 L124.0 296.7 L129.1 273.0 L129.1 262.2 L126.2 252.2 L126.2 233.5 L127.6 225.6 L129.1 222.8 L131.9 204.8 L133.4 181.9 L128.3 146.7 L128.3 131.7 L129.1 131.0 L129.8 115.2 L132.6 110.9 L134.8 113.0 L137.7 120.9 L137.7 133.1 L139.1 141.0 L144.1 159.7 L147.7 169.0 L147.7 174.0 L145.5 179.7 L145.5 187.6 L144.1 191.9 L145.5 192.6 L149.1 189.1 L150.6 190.5 L149.1 197.7 L144.8 202.0 L144.8 203.4 L147.0 203.4 L149.9 201.3 L156.3 192.6 L157.7 188.3 L157.0 181.2 L157.7 162.5 L156.3 153.9 L156.3 137.4 L152.0 123.8 L152.7 120.2 L152.0 108.0 L149.9 98.0 L147.7 92.9 L147.7 84.3 L145.5 72.9 L142.7 67.1 L138.4 62.1 L132.6 59.2 L126.2 57.8 L114.0 50.6 L110.4 47.0 L109.7 43.5 L112.6 39.1 L112.6 37.0 L115.4 30.5 L114.7 14.0 L113.3 10.5 L109.0 6.9 L103.9 4.7Z","cx":100.0,"top":4.0,"bot":344.0,"headCx":99.6,"headR":21.8,"headCy":25.8,"neckY":48.5,"shoulderY":66.9,"waistY":133.2,"crotchY":177.4,"kneeY":248.8,"ankleY":325.3,"legOuter":29.1,"handBottom":203.4,"chestHalf":51.3,"pts":153.0,"width":115.5,"headHalf":15.8}};
+const SIL={"f":{"path":"M107.2 8.7 L101.3 8.7 L100.7 8.0 L98.7 9.3 L94.1 9.3 L90.1 11.3 L84.8 17.2 L79.6 29.1 L75.0 56.7 L73.7 59.4 L69.7 63.3 L63.8 66.0 L60.5 69.3 L59.2 71.9 L59.2 75.8 L57.8 80.5 L57.2 99.6 L56.5 100.2 L56.5 103.5 L54.5 112.1 L53.9 121.3 L48.6 131.8 L41.4 154.9 L35.4 166.1 L30.8 170.7 L25.6 173.3 L19.6 179.9 L17.7 180.6 L18.3 181.9 L21.6 181.9 L24.9 179.3 L26.9 181.2 L21.6 195.1 L21.6 197.7 L22.3 198.4 L23.6 197.1 L25.6 199.0 L24.9 199.7 L26.2 201.0 L28.9 198.4 L30.2 199.7 L34.8 193.1 L36.8 195.1 L36.8 196.4 L38.1 195.7 L39.4 187.2 L41.4 181.9 L42.0 174.0 L59.8 143.7 L60.5 141.1 L61.8 139.7 L65.7 131.2 L67.7 124.6 L67.7 122.0 L69.7 120.0 L71.7 122.0 L72.3 129.9 L67.1 140.4 L64.4 149.6 L61.8 154.9 L61.1 164.8 L59.2 173.3 L58.5 185.2 L57.8 186.5 L58.5 187.2 L59.2 195.1 L60.5 197.7 L60.5 199.7 L65.1 214.8 L65.1 217.5 L67.7 228.0 L67.7 231.3 L68.4 232.0 L69.0 250.4 L68.4 251.1 L68.4 257.0 L67.7 257.7 L67.7 262.3 L67.1 262.9 L67.1 273.5 L67.7 274.1 L67.7 279.4 L68.4 280.1 L69.7 291.9 L74.3 304.4 L75.0 310.4 L75.6 311.0 L75.0 320.9 L69.7 328.1 L61.8 333.4 L61.8 336.7 L65.7 338.7 L68.4 338.7 L69.0 338.0 L70.4 339.3 L75.0 339.3 L76.9 337.4 L78.3 337.4 L79.6 334.1 L85.5 329.5 L85.5 320.2 L86.8 317.6 L86.8 315.6 L84.8 312.3 L84.8 299.2 L85.5 298.5 L86.2 287.3 L88.1 278.7 L88.1 271.5 L87.5 270.8 L86.2 257.0 L90.8 241.8 L90.8 207.6 L91.4 206.9 L91.4 201.0 L93.4 199.0 L96.0 202.3 L96.0 206.3 L97.4 210.9 L97.4 217.5 L98.0 218.1 L98.0 243.8 L101.3 253.7 L100.7 283.3 L101.3 284.0 L101.3 288.0 L102.6 293.2 L102.6 299.2 L103.3 299.8 L103.3 307.7 L102.6 308.4 L102.6 311.0 L100.7 315.0 L100.7 329.5 L102.0 330.8 L101.3 336.0 L103.3 339.3 L104.6 340.0 L108.6 340.0 L109.2 339.3 L114.5 340.0 L118.4 338.0 L119.1 336.7 L117.8 333.4 L112.5 327.5 L111.2 321.6 L112.5 318.9 L112.5 315.6 L111.9 315.0 L112.5 307.7 L118.4 290.6 L119.1 284.0 L121.1 276.1 L121.1 263.6 L120.4 262.9 L119.8 253.0 L119.1 252.4 L119.8 232.0 L120.4 231.3 L121.1 224.1 L123.7 214.2 L123.7 210.9 L129.6 189.8 L129.6 177.3 L129.0 176.6 L126.3 155.6 L123.1 147.7 L123.1 145.0 L121.1 139.1 L117.8 131.8 L118.4 120.6 L120.4 118.7 L122.4 120.6 L124.4 129.2 L131.6 144.4 L148.1 172.0 L148.7 179.3 L150.1 181.9 L152.7 195.1 L156.0 192.4 L160.6 198.4 L161.9 197.1 L164.6 199.7 L169.2 195.1 L167.8 192.4 L167.2 188.5 L164.6 183.9 L163.9 179.9 L165.9 178.0 L168.5 180.6 L172.5 180.6 L173.1 179.9 L169.8 178.0 L164.6 172.0 L158.6 168.7 L156.0 166.1 L147.4 149.6 L142.8 133.2 L139.5 125.9 L137.5 123.3 L136.2 118.0 L135.6 108.8 L134.9 108.1 L134.9 99.6 L134.3 98.9 L134.9 90.3 L135.6 89.7 L134.3 73.9 L123.1 62.7 L118.4 47.5 L118.4 35.0 L116.5 29.1 L116.5 20.5 L111.2 11.3 L109.2 9.3Z","hc":[100.0,34.3],"hr":22.4,"sh":69.9,"sp":123.9,"hip":191.1,"waist":139.1,"cr":201.7,"knee":268.9,"ank":324.2,"bot":340.0,"tL":57.8,"tR":129.6,"lL":58.5,"lR":129.0,"hl":[17.7,172.0,43.3,201.0],"hrt":[148.1,172.0,173.1,199.7],"wr":172.0,"el":121.0},"m":{"path":"M99.3 8.0 L98.6 8.7 L93.7 9.4 L89.5 11.5 L86.7 14.3 L85.3 17.1 L84.6 34.0 L87.4 40.3 L87.4 42.4 L90.9 47.3 L89.5 50.1 L86.0 53.6 L81.8 55.7 L76.1 59.9 L71.2 62.0 L68.4 62.0 L62.8 64.9 L60.0 67.7 L56.5 73.3 L56.5 75.4 L54.4 81.0 L53.7 95.0 L51.6 99.9 L51.6 102.1 L50.2 105.6 L50.2 109.1 L49.5 109.8 L49.5 115.4 L48.8 116.1 L49.5 125.2 L46.7 132.2 L46.7 135.0 L45.3 138.6 L45.3 154.7 L44.5 155.4 L44.5 162.4 L43.8 163.1 L43.8 172.9 L44.5 173.6 L43.8 188.4 L45.3 192.6 L51.6 201.0 L54.4 203.1 L57.2 203.8 L56.5 201.7 L52.3 197.5 L50.2 190.5 L52.3 188.4 L55.8 193.3 L57.2 192.6 L55.8 187.7 L55.8 180.0 L53.0 170.8 L54.4 168.7 L57.2 160.3 L57.2 158.2 L60.7 148.4 L60.7 145.6 L62.1 142.8 L62.8 134.3 L63.5 133.6 L63.5 125.9 L62.8 124.5 L66.3 114.0 L68.4 111.9 L71.2 114.7 L71.9 130.8 L72.6 131.5 L72.6 147.7 L71.9 148.4 L71.9 153.3 L70.5 158.2 L70.5 164.5 L69.8 165.2 L69.1 176.5 L68.4 177.2 L68.4 182.1 L67.7 182.8 L69.1 204.5 L70.5 209.4 L70.5 214.4 L71.9 218.6 L71.9 222.1 L73.3 224.9 L74.0 231.9 L74.7 232.6 L74.7 250.9 L73.3 253.7 L72.6 260.0 L71.9 260.7 L71.9 271.2 L72.6 271.9 L72.6 276.1 L73.3 276.8 L73.3 280.3 L74.0 281.0 L75.4 289.5 L84.6 315.4 L84.6 328.8 L81.0 332.3 L76.1 335.1 L74.7 337.9 L76.1 339.3 L78.9 339.3 L79.6 340.0 L91.6 340.0 L93.7 339.3 L95.8 336.5 L95.8 326.7 L95.1 326.0 L95.1 321.8 L94.4 321.0 L94.4 316.8 L93.7 316.1 L93.7 286.7 L95.1 282.4 L95.1 265.6 L94.4 264.9 L93.7 256.5 L92.3 253.0 L92.3 248.8 L95.1 241.7 L95.1 238.2 L95.8 237.5 L97.9 203.1 L100.7 201.0 L102.8 203.1 L104.9 237.5 L105.6 238.2 L105.6 241.7 L108.4 248.8 L108.4 253.0 L107.0 256.5 L106.3 264.9 L105.6 265.6 L105.6 282.4 L107.0 286.7 L107.0 316.1 L106.3 316.8 L106.3 321.0 L105.6 321.8 L105.6 326.0 L104.9 326.7 L104.9 336.5 L108.4 340.0 L120.4 340.0 L121.1 339.3 L124.6 339.3 L126.0 337.9 L124.6 335.1 L119.7 332.3 L116.1 328.8 L116.1 315.4 L123.9 294.4 L123.9 292.3 L126.7 283.8 L128.1 271.9 L128.8 271.2 L128.8 260.7 L128.1 260.0 L127.4 253.7 L126.0 250.9 L126.0 232.6 L126.7 231.9 L127.4 224.9 L128.8 222.1 L128.8 218.6 L130.2 214.4 L130.2 209.4 L131.6 204.5 L133.0 182.1 L132.3 181.4 L131.6 170.1 L130.9 169.4 L130.9 165.2 L130.2 164.5 L130.2 158.2 L129.5 157.5 L128.8 148.4 L128.1 147.7 L128.1 132.9 L128.8 132.2 L129.5 116.8 L130.2 116.1 L130.2 114.0 L132.3 111.9 L134.4 114.0 L137.9 124.5 L137.2 125.9 L137.2 134.3 L137.9 135.0 L138.6 142.1 L139.3 142.8 L141.4 153.3 L143.5 158.2 L143.5 160.3 L146.3 166.6 L146.3 168.7 L147.7 170.8 L144.9 180.0 L144.9 187.7 L143.5 192.6 L144.9 193.3 L148.4 188.4 L150.5 190.5 L148.4 197.5 L144.2 201.7 L143.5 203.8 L144.9 203.8 L149.1 201.0 L155.5 192.6 L156.9 188.4 L156.9 182.1 L156.2 181.4 L156.9 163.1 L156.2 162.4 L156.2 155.4 L155.5 154.7 L155.5 138.6 L154.0 135.0 L154.0 132.2 L151.2 125.2 L151.2 122.4 L151.9 121.7 L151.2 109.8 L150.5 109.1 L150.5 105.6 L149.8 104.9 L149.1 99.9 L147.0 95.0 L147.0 86.6 L146.3 85.9 L146.3 81.0 L145.6 80.3 L144.9 75.4 L142.1 69.8 L137.9 64.9 L132.3 62.0 L129.5 62.0 L126.0 60.6 L121.1 57.1 L114.0 53.6 L110.5 50.1 L109.1 47.3 L112.6 42.4 L112.6 40.3 L115.4 34.0 L114.7 17.8 L113.3 14.3 L109.1 10.8 L104.2 8.7Z","hc":[100.0,27.0],"hr":16.1,"sh":62.7,"sp":114.7,"hip":198.9,"waist":148.4,"cr":205.9,"knee":270.5,"ank":322.5,"bot":340.0,"tL":67.7,"tR":133.0,"lL":69.1,"lR":131.6,"hl":[43.8,183.5,57.2,203.8],"hrt":[143.5,183.5,156.9,203.8],"wr":183.5,"el":123.1}};
+function avatarSVG(g){
+  const L=SIL[g],S=sel,id='cp'+g,k=L.hr/26,hx=L.hc[0],hy=L.hc[1];
+  const T='transform="translate('+(hx-100*k).toFixed(1)+','+(hy-58*k).toFixed(1)+') scale('+k.toFixed(3)+')"';
+  const cls=s=>'gear on'+(lastSlot==s?' pop':'');
+  const R=(x,y,w,h,f)=>'<rect x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+w.toFixed(1)+'" height="'+h.toFixed(1)+'" fill="'+f+'"/>';
+  const sh=L.sh-5,tw=L.tR-L.tL,lw=L.lR-L.lL,bootH=34;
+  const jacket=c=>R(0,sh,200,L.wr-sh,c)+R(L.tL-2,L.wr,tw+4,L.hip+4-L.wr,c);
+  const shirt=c=>R(0,sh,200,L.el-sh,c)+R(L.tL-2,L.el,tw+4,L.hip-L.el,c);
+  const jeans=c=>R(L.lL-3,L.hip-14,lw+6,L.bot-L.hip+20,c);
+  let o='<svg viewBox="0 0 200 350" width="190" height="332" role="img" aria-label="Worker figure"><defs><clipPath id="'+id+'"><path d="'+L.path+'"/></clipPath><linearGradient id="vg'+g+'" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#000" stop-opacity=".38"/><stop offset=".28" stop-color="#fff" stop-opacity=".14"/><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".42"/></linearGradient></defs>';
+  o+='<path d="'+L.path+'" fill="#c4ced4"/><g clip-path="url(#'+id+')">';
+  const b=S.body;
+  if(b=='fr'||b=='frl')o+='<g class="'+cls('body')+'">'+jacket('#1f3c6b')+jeans('#1f3c6b')+(b=='frl'?R(L.tL+3,L.sh+14,tw-6,L.knee-L.sh-14,'#9a6a3a')+R(L.tL+3,L.sh+14,tw-6,5,'#7d5028'):'')+R(0,L.sh+24,200,6,'#d8dde2')+R(L.lL-3,L.knee+28,lw+6,5,'#d8dde2')+'</g>';
+  else{
+    o+='<g class="'+cls('body')+'">'+(b=='synth'?jacket('#c8402f'):shirt('#5b7fa6'))+jeans('#3a4452');
+    if(b=='leath')o+=jacket('#9a6a3a')+R(L.tL+3,L.sh+12,tw-6,L.knee-L.sh-12,'#7d5028');
+    if(b=='apron')o+=R(L.tL+3,L.sh+14,tw-6,L.knee-L.sh-14,'rgba(235,200,40,.88)');
+    o+='</g>';
+  }
+  if(S.legs=='chaps')o+='<g class="'+cls('legs')+'">'+R(L.lL-3,L.cr-24,lw+6,L.bot-bootH-(L.cr-24),'#e8742a')+R(L.lL-3,L.cr+30,lw+6,4,'#a84e14')+'</g>';
+  if(S.feet=='shoe')o+='<g class="'+cls('feet')+'">'+R(0,L.bot-14,200,14,'#e8e8e8')+R(0,L.bot-4,200,4,'#aab3bb')+'</g>';
+  else o+='<g class="'+cls('feet')+'">'+R(0,L.bot-bootH,200,bootH,'#4a3320')+R(0,L.bot-6,200,6,'#2b1d12')+R(0,L.bot-14,200,5,'#aab3bb')+(S.feet=='mt'?R(0,L.bot-bootH,200,12,'#6a4a2a'):'')+'</g>';
+  if(S.feet=='spat')o+='<g class="gear on">'+R(L.lL-4,L.bot-bootH-20,lw+8,24,'#8a5a2a')+R(L.lL-4,L.bot-bootH-20,lw+8,3,'#5e3b18')+'</g>';
+  const gc={leather:['#a8742f','#7a4f1f',1],a4:['#8aa0b0','#5c7080',0],a7:['#4c5560','#2f353d',0],nit:['#2f7fd0','#1d5a9c',0],aramid:['#e0b020','#a07a10',0],wgl:['#8a4a22','#5a2e12',1.6]}[S.hands];
+  if(gc){o+='<g class="'+cls('hands')+'">';for(const hb of [L.hl,L.hrt]){const up=gc[2]*18;o+=R(hb[0]-3,hb[1]-up-2,hb[2]-hb[0]+6,hb[3]-hb[1]+up+8,gc[0])+R(hb[0]-3,hb[1]-up-2,hb[2]-hb[0]+6,4,gc[1])}o+='</g>'}
+  o+=R(0,0,200,350,'url(#vg'+g+')')+'</g><path d="'+L.path+'" fill="none" stroke="#6b7c86" stroke-width="1"/>';
+  const hg=(slot,svg)=>'<g '+T+'><g class="'+cls(slot)+'">'+svg+'</g></g>';
+  if(S.resp=='papr')o+=hg('resp','<path d="M66 34 Q100 12 134 34 L136 100 Q100 112 64 100 Z" fill="rgba(215,235,255,.28)" stroke="#6a8aa5" stroke-width="2"/><rect x="82" y="44" width="36" height="6" fill="rgba(255,255,255,.35)"/><path d="M100 104 Q72 150 82 200" stroke="#333" stroke-width="5" fill="none"/>');
+  if(S.resp=='n95')o+=hg('resp','<path d="M84 68 Q100 62 116 68 Q114 88 100 92 Q86 88 84 68 Z" fill="#f2f2f2" stroke="#bbb" stroke-width="1.5"/><path d="M78 66 L84 70 M122 66 L116 70" stroke="#ddd" stroke-width="2"/>');
+  else if(S.resp=='p100'||S.resp=='combo')o+=hg('resp','<path d="M85 68 Q100 64 115 68 Q113 90 100 94 Q87 90 85 68 Z" fill="#6c7a85" stroke="#46525b" stroke-width="1.5"/><circle cx="86" cy="82" r="7" fill="'+(S.resp=='combo'?'#e8c020':'#d65ab0')+'"/><circle cx="114" cy="82" r="7" fill="'+(S.resp=='combo'?'#e8c020':'#d65ab0')+'"/>'+(S.resp=='combo'?'<circle cx="86" cy="82" r="3" fill="#c040a0"/><circle cx="114" cy="82" r="3" fill="#c040a0"/>':''));
+  if(S.ears=='plug'||S.ears=='both')o+=hg('ears','<circle cx="75" cy="64" r="3.5" fill="#f08a1f"/><circle cx="125" cy="64" r="3.5" fill="#f08a1f"/>');
+  if(S.ears=='muff'||S.ears=='both')o+=hg('ears','<path d="M74 62 Q74 28 100 28 Q126 28 126 62" stroke="#444" stroke-width="5" fill="none"/><ellipse cx="73" cy="62" rx="9" ry="13" fill="#d23b2e"/><ellipse cx="127" cy="62" rx="9" ry="13" fill="#d23b2e"/>');
+  if(S.eyes=='gl'||S.eyes=='glp')o+=hg('eyes','<circle cx="91" cy="60" r="9" fill="rgba(150,200,255,.35)" stroke="#2a2a2a" stroke-width="2"/><circle cx="109" cy="60" r="9" fill="rgba(150,200,255,.35)" stroke="#2a2a2a" stroke-width="2"/><path d="M74 58 L82 60 M126 58 L118 60" stroke="#2a2a2a" stroke-width="2"/>'+(S.eyes=='glp'?'<path d="M82 56 Q80 62 82 66 M118 56 Q120 62 118 66" stroke="#2a2a2a" stroke-width="2" fill="none"/>':''));
+  if(S.eyes=='gog')o+=hg('eyes','<rect x="76" y="50" width="48" height="19" rx="8" fill="rgba(160,215,255,.4)" stroke="#1d3b5a" stroke-width="2.5"/><path d="M70 58 L76 60 M130 58 L124 60" stroke="#1d3b5a" stroke-width="3"/>');
+  if(S.eyes=='las')o+=hg('eyes','<rect x="76" y="50" width="48" height="19" rx="8" fill="rgba(210,40,40,.65)" stroke="#2a2a2a" stroke-width="2.5"/><path d="M70 58 L76 60 M130 58 L124 60" stroke="#2a2a2a" stroke-width="3"/>');
+  if(S.face=='shield')o+=hg('face','<path d="M66 46 Q100 34 134 46 L136 96 Q100 106 64 96 Z" fill="rgba(180,220,255,.25)" stroke="#8fb6d8" stroke-width="2"/><rect x="64" y="38" width="72" height="9" rx="4" fill="#33506b"/>');
+  if(S.face=='helm')o+=hg('face','<path d="M64 62 Q62 20 100 20 Q138 20 136 62 L136 98 L64 98 Z" fill="#3c4045" stroke="#26292d" stroke-width="2"/><rect x="74" y="48" width="52" height="30" rx="5" fill="'+lensCol(lensShade)+'"/><rect x="80" y="53" width="16" height="5" fill="rgba(200,255,200,.4)"/>');
+  if(S.head=='cap')o+=hg('head','<path d="M69 46 Q69 21 100 21 Q131 21 131 46 L134 52 L66 52 Z" fill="#1f3c6b" stroke="#142848" stroke-width="2"/><path d="M100 21 L100 50" stroke="#2c528c" stroke-width="2"/>');
+  if(S.head=='hatl')o+=hg('head','<path d="M66 50 L70 78 L82 78 L80 54Z M134 50 L130 78 L118 78 L120 54Z" fill="#1f3c6b" stroke="#142848" stroke-width="1.5"/>');
+  if(S.head=='hat'||S.head=='hatl')o+=hg('head','<path d="M68 48 Q68 18 100 18 Q132 18 132 48 L140 50 L140 55 L60 55 L60 50 Z" fill="#f2c200" stroke="#b08c00" stroke-width="2"/><path d="M96 18 L96 48 M104 18 L104 48" stroke="#d8aa00" stroke-width="3"/>');
+  return o+'</svg>';
+}
+
+const uiS={};
+function setHtml(id,s){if(uiS[id]!==s){uiS[id]=s;document.getElementById(id).innerHTML=s}}
+const barCol=v=>v>66?'#3ec46d':v>33?'#e8b339':'#e5533d';
+function renderHud(){let s='';for(const k in VL)s+='<div class="vb" title="'+VL[k]+'"><span>'+VL[k].slice(0,2)+'</span><i style="width:'+Math.round(V[k])+'%;background:'+barCol(V[k])+'"></i></div>';setHtml('vit',s)}
+function renderVitals(){
+  let s='';for(const k in VL)s+='<div class="sfv"><span>'+VL[k]+'</span><u><i style="width:'+Math.round(V[k])+'%;background:'+barCol(V[k])+'"></i></u><b>'+Math.round(V[k])+'</b></div>';
+  setHtml('sf-vit',s);
+  const Le=curDb-attenDb(),allowed=Le>=80?28800/Math.pow(2,(Le-85)/3):0;
+  setHtml('sf-dose','Noise at your ear: <b>'+Math.round(Le)+' dB(A)</b> (tool '+Math.round(curDb)+', protection -'+attenDb().toFixed(1)+') · Daily dose: <b>'+Math.round(noiseDose)+'%</b>'+(allowed?' · safe time at this level: '+(allowed<120?Math.round(allowed)+' s':Math.round(allowed/60)+' min'):''));
+}
+function renderLog(){
+  const sc=log.arcSec>0?Math.round(100*(1-Math.min(1,log.arcUnder/log.arcSec))):100;
+  setHtml('sf-log','<b>Exposure log</b> · arc time '+log.arcSec.toFixed(1)+' s (unprotected '+log.arcUnder.toFixed(1)+' s) · peak noise '+Math.round(log.peakDb)+' dB · cuts '+log.cuts+(V.cornea<85?' · Arc-eye pain would start hours after a real flash like this and clear in 1 to 2 days.':''));
+}
+function renderSlots(){
+  const box=document.getElementById('sf-slots');box.innerHTML='';
+  for(const k in SLOTS){
+    const row=document.createElement('div');row.className='sf-slot';
+    const lb=document.createElement('span');lb.textContent=SLOTN[k];row.appendChild(lb);
+    for(const o of SLOTS[k]){const b=document.createElement('button');b.textContent=o[1];b.className=sel[k]==o[0]?'on':'';b.onclick=()=>{sel[k]=o[0];lastSlot=k;saveSafety();recompute();renderSafety();setTimeout(()=>{lastSlot=null},600)};row.appendChild(b)}
+    box.appendChild(row);
+  }
+}
+function renderCtl(){
+  const rq=reqShadeFor(tool.n),shw=sel.face=='helm',aw=tool.n=='Welder'||tool.n=='Plasma cutter';
+  document.getElementById('sf-ctl').style.display=(shw||aw)?'':'none';
+  document.getElementById('shv').textContent=lensShade;document.getElementById('ampv').textContent=amps+' A';
+  document.getElementById('shade').value=lensShade;document.getElementById('amps').value=amps;
+  let t='';
+  if(rq)t='For the '+tool.n+(aw?' at '+amps+' A':'')+' OSHA/ANSI Z49.1 asks for at least <b>shade '+rq+'</b>. '+(sel.face=='helm'?(lensShade>=rq?'<span class="ok">Your shade '+lensShade+' is enough.</span>':'<span class="no">Your shade '+lensShade+' is too light.</span>'):'<span class="no">No filter lens.</span>');
+  setHtml('sf-req',t);
+}
+function renderRec(){
+  const rq=REQ[tool.n]||[];
+  setHtml('sf-rec','<b>'+tool.n+'</b>: '+(rq.length?rq.map(r=>{const ok=r[1].includes(sel[r[0]]);return '<span class="'+(ok?'ok':'no')+'">'+(ok?'✓ ':'✕ ')+r[2]+'</span>'}).join(', '):'no special gear needed'));
+  setHtml('sf-brief',BRIEF[tool.n]||'');
+}
+function renderSafety(){
+  document.getElementById('avatar').innerHTML=avatarSVG(gender);
+  document.getElementById('gm').className=gender=='m'?'on':'';document.getElementById('gf').className=gender=='f'?'on':'';
+  renderSlots();renderCtl();renderRec();renderVitals();renderLog();document.getElementById('hazon').checked=hazOn;
+}
+function updSafetyBtn(){setTxt('sfbtn','Safety'+(hazOn&&miss.length?' ⚠':''))}
+document.getElementById('sfbtn').onclick=()=>{rel();panelOpen=true;document.getElementById('safety').hidden=false;recompute();renderSafety()};
+document.getElementById('sfx').onclick=()=>{panelOpen=!!inj;document.getElementById('safety').hidden=true;updSafetyBtn()};
+document.getElementById('gm').onclick=()=>{gender='m';saveSafety();renderSafety()};
+document.getElementById('gf').onclick=()=>{gender='f';saveSafety();renderSafety()};
+document.getElementById('hazon').onchange=e=>{hazOn=!!e.target.checked;saveSafety();updSafetyBtn()};
+document.getElementById('shade').oninput=e=>{lensShade=+e.target.value;saveSafety();recompute();renderCtl();document.getElementById('avatar').innerHTML=avatarSVG(gender)};
+document.getElementById('amps').oninput=e=>{setAmps(+e.target.value);saveSafety();recompute();renderCtl()};
+document.getElementById('sf-auto').onclick=()=>{
+  for(const r of REQ[tool.n]||[])if(!r[1].includes(sel[r[0]]))sel[r[0]]=r[1][0];
+  const rs=reqShadeFor(tool.n);if(rs&&sel.face=='helm'&&lensShade<rs)lensShade=rs;
+  saveSafety();recompute();renderSafety();updSafetyBtn();
+};
+document.getElementById('sf-aid').onclick=()=>{V.hands=Math.min(100,V.hands+20);V.body=Math.min(100,V.body+20);V.feet=Math.min(100,V.feet+20);V.head=Math.min(100,V.head+15);V.lungs=Math.min(100,V.lungs+25);renderVitals();say('First aid: hands, body, feet, head and lungs recover. Eyes and hearing damage does not.')};
+document.getElementById('sf-rest').onclick=()=>{V.cornea=Math.min(100,V.cornea+25);arcSym*=.5;fl=0;renderVitals();say('Eyes rested. Arc eye usually clears in 1 to 2 days.')};
+document.getElementById('sf-day').onclick=()=>{earsPerm+=.3*Math.max(0,noiseDose-100);noiseDose=0;V.cornea=100;arcSym=0;arcDelay=0;igniteT=0;for(const k of ['hands','body','feet','head','lungs'])V[k]=Math.min(100,V[k]+30);updEars();renderVitals();say('Next day: arc eye and temporary hearing shift cleared, burns partly healed. Permanent damage stays.')};
+recompute();
+// ===== DETAILED TOOLS: weld beads and filler, laid rods, torch tip/flame/gas, plasma current, grinder discs =====
+const PROC={Stick:{spd:.75,wid:1.2,use:1.4,slag:true,spat:1.2,qb:0},MIG:{spd:1.4,wid:1,use:1,slag:false,spat:1.4,qb:0},TIG:{spd:.55,wid:.7,use:.5,slag:false,spat:.2,qb:.08}};
+const WS={proc:'Stick',cls:'E6013',sd:3.2,arc:'normal',stuck:false,rod:2.4,filler:100,rodStock:900,rodDia:5,gas:'mix',volt:22,ang:'drag',wf:1,v:0,q:1,h:1,burn:0,lbx:-99,lby:-99,diag:'',pen:1};
+const TORCH={tip:4,flame:'neutral',press:1,gas:100,fuel:'propane',cut:false};
+const GRD={disc:'grind',broken:false,ang:undefined,blade:'bimetal',bit:'medium'};
+const AMPS={Welder:120,'Plasma cutter':40};
+const ROD={
+ E6010:{pen:1.3,fill:.9,spat:1.5,k:.95,gap:1,rust:1,amps:{2.4:[40,80],3.2:[75,125],4:[110,170],4.8:[150,220]},note:'digs deep, fast-freezing, cuts through rust, flat bead, spatters'},
+ E6011:{pen:1.25,fill:.9,spat:1.4,k:.95,gap:1,rust:1,amps:{2.4:[40,80],3.2:[75,125],4:[110,170],4.8:[150,220]},note:'like E6010 but runs on AC; forgiving on dirty metal'},
+ E6013:{pen:.8,fill:1,spat:.6,k:.85,gap:1.3,rust:0,amps:{2.4:[50,90],3.2:[80,130],4:[110,170],4.8:[150,220]},note:'soft smooth arc, easy slag, good for thin sheet and wide gaps'},
+ E7018:{pen:1,fill:1.1,spat:.4,k:1.15,gap:.9,rust:0,short:1,amps:{2.4:[70,100],3.2:[90,150],4:[150,220],4.8:[200,280]},note:'strongest (70 ksi), heavy slag, needs a short arc and clean metal'},
+ E7024:{pen:.7,fill:1.6,spat:.5,k:1,gap:.8,rust:0,amps:{2.4:[70,110],3.2:[100,150],4:[140,200],4.8:[180,260]},note:'high deposition, thick bead, flat position'}
+};
+const STICKD=[2.4,3.2,4,4.8],PXMM=1.8;
+const FUEL={propane:{n:'Propane (air)',T:1900,P:1,foc:1.15,oxy:false},mapp:{n:'MAP-Pro (air)',T:2100,P:1.25,foc:1.05,oxy:false},acetair:{n:'Acetylene (air)',T:2400,P:1.1,foc:1,oxy:false},oxyprop:{n:'Oxy-propane',T:2700,P:1.8,foc:1.25,oxy:true},oxyacet:{n:'Oxy-acetylene',T:3232,P:1.6,foc:.8,oxy:true}};
+const PL={stand:'normal',pow:1,vi:3,r:1,cap:10,dross:''};
+const LAS={pw:1500,gas:'O2',pow:1};
+const SAWB={wood:{n:'Wood blade (7 TPI)',p:3,r:10},bimetal:{n:'Bi-metal (18 TPI)',p:6,r:9},carbide:{n:'Carbide grit',p:9,r:9}};
+const DRB={small:{n:'3 mm bit',p:12,r:5},medium:{n:'6 mm bit',p:12,r:8},large:{n:'10 mm bit',p:14,r:12}};
+let SPD=0;
+const DISCS={cut:{n:'Cut-off wheel (1.6 mm)',r:5,p:22,fin:false,cutoff:true,frag:1},ultra:{n:'Ultra-thin cut-off (1 mm)',r:4,p:24,fin:false,cutoff:true,frag:2.5},grind:{n:'Grinding wheel',r:14,p:6,fin:true},flap:{n:'Flap disc',r:14,p:8,fin:true},wire:{n:'Wire wheel',r:12,p:3,fin:true}};
+let beads=[],rods=[],rodCur=null,gnx=1,gny=1,gm=24;
+TOOLS.push({n:'Filler rod',k:'rod',r:6});
+TOOLS.splice(TOOLS.findIndex(x=>x.n=='Hammer')+1,0,{n:'Chipping hammer',k:'hit',r:14,p:.5,chip:true});
+REQ['Filler rod']=[['hands',['leather','aramid','wgl'],'Welding gloves']];
+for(const k of ['Welder','Plasma cutter','Angle grinder'])REQ[k].push(['head',['cap','hatl','hat'],'Head cover (cap or hat)']);
+BRIEF['Filler rod']='Lay steel rods across a gap, then weld both ends to the sheet. Filler diameter should suit the metal thickness: too big gives overlap, too small gives undercut.';
+const TT=n=>TOOLS.find(x=>x.n==n);
+const torchPow=()=>(.35+.22*TORCH.tip)*TORCH.press*FUEL[TORCH.fuel].P*(TORCH.flame=='oxid'?1.1:TORCH.flame=='carb'?.9:1);
+const flameTemps=()=>{const f=FUEL[TORCH.fuel],m=TORCH.flame=='oxid'?3482/3232:TORCH.flame=='carb'?3149/3232:1;return [Math.round(f.T*m),Math.round(1260*f.T/3232)]};
+const torchTmax=()=>{const Tf=flameTemps()[0],pw=torchPow();return Math.round(20+(Tf-20)*pw/(pw+1.5*thf()))};
+function applyTorch(){TT('Blowtorch').r=(14+3.5*TORCH.tip)*FUEL[TORCH.fuel].foc}
+function applyDisc(){const d=DISCS[GRD.disc],T=TT('Angle grinder');T.r=d.r;T.p=d.p;T.fin=d.fin}
+function setAmps(v){amps=v;AMPS[tool.n]=v;const P=TT('Plasma cutter');P.r=3+v/40}
+function nearestNode(x,y){const i=Math.max(0,Math.min(cols-1,Math.round((x-gm)/gnx))),j=Math.max(0,Math.min(rows-1,Math.round((y-gm)/gny)));return j*cols+i}
+function addLink(a,b,o,k,rk){const A=nodes[a],B=nodes[b],len=Math.max(2,Math.hypot(A.x-B.x,A.y-B.y)),l={a,b,len,l0:len,on:true,st:0,co:0,k,o,i:-1,j:-1,rk:rk||1};links.push(l);A.adj.push(l);B.adj.push(l);return l}
+const BP={x:0,y:0};
+function anchor(px,py){
+  const ni=nearestNode(px,py),n=nodes[ni],ci=ni%cols,cj=Math.floor(ni/cols);
+  const sx=px>=n.x?1:-1,sy=py>=n.y?1:-1;let ix=ci+sx,jy=cj+sy;if(ix<0||ix>=cols)ix=ci-sx;if(jy<0||jy>=rows)jy=cj-sy;
+  const i2=cj*cols+ix,i3=jy*cols+ci,A=nodes[i2],B=nodes[i3],ex=A.x-n.x,ey=A.y-n.y,fx=B.x-n.x,fy=B.y-n.y,dx=px-n.x,dy=py-n.y,det=ex*fy-ey*fx;
+  let u=0,v=0;if(Math.abs(det)>1e-6){u=(dx*fy-dy*fx)/det;v=(ex*dy-ey*dx)/det}
+  return{n:ni,i2,i3,u,v};
+}
+function bpos(b){
+  const n=nodes[b.n];if(!n)return null;
+  if(b.i2!==undefined){const A=nodes[b.i2],B=nodes[b.i3];BP.x=n.x+b.u*(A.x-n.x)+b.v*(B.x-n.x);BP.y=n.y+b.u*(A.y-n.y)+b.v*(B.y-n.y)}
+  else{BP.x=n.x+b.dx;BP.y=n.y+b.dy}
+  return BP;
+}
+function onMetal(ni,x,y){
+  const ci=ni%cols,cj=Math.floor(ni/cols),R2=(cs*1.15)*(cs*1.15);
+  for(let dj=-1;dj<=1;dj++)for(let di=-1;di<=1;di++){const ii=ci+di,jj=cj+dj;if(ii<0||jj<0||ii>=cols||jj>=rows)continue;const n=nodes[jj*cols+ii];if((n.x-x)*(n.x-x)+(n.y-y)*(n.y-y)>R2)continue;for(const l of n.adj)if(l.on&&l.o!='w'&&l.o!='r')return true}
+  for(const rd of rods)for(const r of rd.nodes)if(Math.abs(r.x-x)<9&&Math.abs(r.y-y)<9)return true;
+  return false;
+}
+function removeBeads(r,rate){beads=beads.filter(b=>{const bq=bpos(b);if(!bq)return true;const d=Math.hypot(bq.x-ptr.x,bq.y-ptr.y);if(d>r)return true;b.hg=(b.hg===undefined?1:b.hg)-rate*(b.sp||b.dr?4:1)*(1-.4*d/r);return b.hg>0})}
+function weldTick(){
+  const st=WS.proc=='Stick',P=PROC[WS.proc],rc=ROD[WS.cls],dia=st?WS.sd:WS.rod;
+  const v=Math.hypot(ptr.x-prev.x,ptr.y-prev.y);
+  WS.v=WS.v*.85+v*.15;
+  const vIdeal=(.5+amps/120)*P.spd/Math.pow(thf(),.5);
+  const h=Math.max(.2,Math.min(5,vIdeal/Math.max(.12,WS.v)));
+  const reqA=30*th+10,pen=amps*(st?rc.pen:1)*(WS.ang=='push'?.85:1.08)/reqA,fil=dia/(1.2+th*.6)*(st?rc.fill:1);
+  let q=1-Math.abs(Math.log(h))*.9+P.qb,por=0,und=0,spat=P.spat;
+  const dg=[];
+  WS.wf=WS.ang=='push'?1.15:1;
+  if(WS.ang=='push'&&st){por+=.15;dg.push('pushing a stick rod buries slag: drag it')}
+  if(!st){
+    const vi=14+.05*amps,dv=WS.volt-vi;
+    if(WS.proc=='MIG'){
+      if(dv>4){WS.wf*=1.25;und=Math.max(und,.4);q*=.9;dg.push('voltage high: flat wide bead, undercut')}
+      else if(dv<-4){WS.wf*=.75;spat*=1.8;q*=.85;dg.push('voltage low: stubbing, ropey bead and spatter')}
+    }
+    if(WS.gas=='none'){por+=.9;q*=.5;dg.push('no shielding gas: porous, sooty weld')}
+    else if(WS.proc=='MIG'){
+      if(WS.gas=='co2'){spat*=1.5;WS.wf*=.9;dg.push('CO2: deep but spattery')}
+      else if(WS.gas=='argon'){q*=.8;dg.push('pure argon on steel: narrow, poor wetting')}
+    }else if(WS.gas!='argon'){por+=.5;q*=.6;dg.push('TIG needs pure argon')}
+  }
+  if(st){
+    const ar=rc.amps[dia]||[80,130];
+    if(amps<ar[0]){q*=.45+.55*amps/ar[0];dg.push('current under the '+WS.cls+' range ('+ar[0]+'-'+ar[1]+' A): cold lap')}
+    else if(amps>ar[1]){const f=amps/ar[1];q*=Math.max(.55,1-(f-1)*.9);und=Math.min(1,(f-1)*3);spat*=1+(f-1)*3;dg.push('current over the rod range: undercut and spatter')}
+    if(WS.arc=='long'){spat*=2;por+=rc.short?.7:.25;q*=rc.short?.65:.9;dg.push('long arc: porosity and spatter'+(rc.short?' (E7018 needs a short arc)':''))}
+    else if(WS.arc=='short'){spat*=.6;if(amps<ar[0]*.85&&WS.v<.35)WS.stuck=true}
+    if(WS.stuck&&v>2.5)WS.stuck=false;
+    if(WS.stuck){WS.diag='rod stuck: raise the current, lengthen the arc or snap it free by moving fast';toolLoad=1;if(Math.random()<.2)spark(ptr.x,ptr.y,1,'255,220,140',2,1.6);return}
+  }
+  const ni=nearestNode(ptr.x,ptr.y),nn=nodes[ni];
+  let rs=0;for(const l of nn.adj)rs=Math.max(rs,l.rs||0);
+  if(rs>.25){if(st&&rc.rust)dg.push('cellulose rod burns through the rust');else{q*=.6;por+=.6;dg.push('rust or scale: porosity')}}
+  let slagged=false;
+  for(let i=beads.length-1,c=0;i>=0&&c<300;i--,c++){const b=beads[i];if(!b.slag||fN-b.f<60)continue;const bq=bpos(b);if(bq&&Math.hypot(bq.x-ptr.x,bq.y-ptr.y)<8){slagged=true;break}}
+  if(slagged){q*=.7;por+=.3;dg.push('slag trapped: chip it with the hammer between passes')}
+  if(pen<.8){q*=.5+pen*.4;dg.push('current too low for '+th.toFixed(1)+' mm: poor penetration')}
+  else if(pen>2.2){q*=.75;und=Math.max(und,.5);dg.push('current too high: undercut, distortion')}
+  if(h>1.6)dg.push('too slow: heavy bead, burn-through risk');
+  else if(h<.6){und=Math.max(und,.6);dg.push('too fast: lack of fusion, undercut')}
+  if(fil>1.7||fil<.5)q*=.8;
+  if(fil>1.7)dg.push('filler too thick: overlap');else if(fil<.5)dg.push('filler too thin: undercut');
+  q=Math.max(.05,Math.min(1,q));
+  WS.h=h;WS.q=q;WS.pen=pen;toolLoad=1;
+  WS.diag=dg.length?dg.join(' · '):'good bead';
+  const filled=WS.filler>0;
+  rodHeat(ptr.x,ptr.y,amps*2,q);
+  const heat=amps*.012*h*mat.hc/thf()*(st&&WS.arc=='long'?1.1:1);
+  for(const l of nn.adj){l.T=(l.T||20)+heat;addHot(l)}
+  if(h>1.9&&pen>1&&WS.v<.5){WS.burn++;if(WS.burn>25){for(const l of nn.adj)if(l.on&&l.o!='r')cutLink(l,3,'255,190,90',3);WS.burn=0}}else WS.burn=Math.max(0,WS.burn-1);
+  const first=WS.lbx<-50,dist=first?2:Math.hypot(ptr.x-WS.lbx,ptr.y-WS.lby);
+  if(dist>1.2){
+    const w=Math.max(2,Math.min(14,(2+amps/30)*Math.pow(dia/2.4,.4)*Math.sqrt(h)*P.wid*WS.wf*(filled?1:.6)*(st&&WS.arc=='long'?1.15:1)));
+    const ang=first?(WS.ba||0):Math.atan2(ptr.y-WS.lby,ptr.x-WS.lbx);WS.ba=(first||WS.ba===undefined)?ang:WS.ba+Math.atan2(Math.sin(ang-WS.ba),Math.cos(ang-WS.ba))*.5;
+    const steps=first?1:Math.min(60,Math.max(1,Math.ceil(dist/2)));let anyM=false;
+    for(let si=1;si<=steps;si++){
+      const t=si/steps,px=first?ptr.x:WS.lbx+(ptr.x-WS.lbx)*t,py=first?ptr.y:WS.lby+(ptr.y-WS.lby)*t,pi=nearestNode(px,py),m=onMetal(pi,px,py);
+      if(m){anyM=true;beads.push(Object.assign(anchor(px,py),{w,q,f:fN,slag:P.slag&&filled,sg:{E6010:.8,E6011:.8,E6013:.6,E7018:1.4,E7024:1.2}[WS.cls]||1,dry:!filled,por:por>.3?1:0,und:und>.3?1:0,a:WS.ba,pr:WS.proc[0]}))}
+    }
+    WS.onM=anyM;
+    if(!anyM){WS.diag='arc in the air: no metal here. Lay a filler rod across the gap or build up the edges first';for(let i=0;i<2;i++)emit({k:'b',x:ptr.x,y:ptr.y,vx:(Math.random()-.5)*1.2,vy:.3,life:1,dec:.02,drag:.99,g:.18,c:'255,170,70',z:2.2})}
+    if(filled&&WS.onM&&Math.random()<.3*spat)beads.push({n:ni,dx:ptr.x-nn.x+(Math.random()-.5)*w*3,dy:ptr.y-nn.y+(Math.random()-.5)*w*3,w:.9+Math.random()*.7,q:1,f:fN,sp:1});
+    while(beads.length>6000)beads.shift();
+    WS.lbx=ptr.x;WS.lby=ptr.y;
+    if(filled)WS.filler=Math.max(0,WS.filler-dist*P.use*.05*(dia/2.4));
+    if(Math.random()<.4*spat)spark(ptr.x,ptr.y,1,'255,210,120',3,1.8);
+  }
+  if(!filled)hint(st?'The rod is spent. Press New rod in the tool setup row.':'Out of filler wire. Press Reload filler in the tool setup row.');
+  // fuse gaps in the sheet: up to about twice the rod diameter in one pass, wider gaps need built-up edges or a laid rod
+  const capPx=filled?2*dia*PXMM*(st?rc.gap:1)*Math.min(1.4,fil):0;
+  let did=0,wide=false;const rr=12;
+  for(const l of links){
+    if(l.on||l.o=='r'||l.o=='w')continue;
+    const A=nodes[l.a],B=nodes[l.b],mx=(A.x+B.x)/2,my=(A.y+B.y)/2;
+    if(Math.abs(mx-ptr.x)>rr||Math.abs(my-ptr.y)>rr)continue;
+    const d=Math.hypot(A.x-B.x,A.y-B.y),gapMax=Math.max(l.l0*1.35,capPx);
+    const ddx=B.x-A.x,ddy=B.y-A.y;
+    if(d>=gapMax){
+      if(filled&&d<gapMax*3.2){if(!A.pin&&!A.held){A.x+=ddx*.05;A.y+=ddy*.05}if(!B.pin&&!B.held){B.x-=ddx*.05;B.y-=ddy*.05}if(Math.random()<.2)spark(mx,my,1,'255,220,150',2,1.6)}
+      else if(filled)wide=true;
+      continue;
+    }
+    if(!A.pin&&!A.held){A.x+=ddx*.18;A.y+=ddy*.18}
+    if(!B.pin&&!B.held){B.x-=ddx*.18;B.y-=ddy*.18}
+    if(d<l.l0*1.4&&did<6){l.on=true;l.len=Math.max(d*.9,l.l0*.9);l.k=(.3+.7*q)*(pen<.8?.6:1)*(st?rc.k:1);l.T=900;addHot(l);l.weld=q;did++;spark(mx,my,2,'255,240,200',3,2)}
+  }
+  if(wide)hint('Gap too wide for one pass: build the edges up in several beads, or lay a filler rod across it and weld both ends.');
+  if(rods.length&&filled&&fN%3==0){
+    for(const rd of rods)for(const rn of rd.nodes){
+      if(Math.abs(rn.x-ptr.x)>14||Math.abs(rn.y-ptr.y)>14||Math.hypot(rn.x-ptr.x,rn.y-ptr.y)>14)continue;
+      const si=nearestNode(rn.x,rn.y),ci=si%cols,cj=Math.floor(si/cols);
+      let best=-1,bd=24;
+      for(let dj=-1;dj<=1;dj++)for(let di=-1;di<=1;di++){const ii=ci+di,jj=cj+dj;if(ii<0||jj<0||ii>=cols||jj>=rows)continue;const k=jj*cols+ii,s=nodes[k];if(rn.wl.has(k))continue;const dd=Math.hypot(s.x-rn.x,s.y-rn.y);if(dd<bd){bd=dd;best=k}}
+      if(best>=0){rn.wl.add(best);const lk=addLink(rn.idx,best,'w',(.3+.7*q)*(st?rc.k:1));lk.weld=q;lk.T=900;addHot(lk);rd.welds++;spark(rn.x,rn.y,3,'255,240,200',3,2);beads.push({n:best,dx:rn.x-nodes[best].x,dy:rn.y-nodes[best].y,w:6,q,f:fN,pr:WS.proc[0],a:0});
+        if(rd.nodes.slice(0,2).some(x=>x.wl.size)&&rd.nodes.slice(-2).some(x=>x.wl.size))for(const x of rd.nodes)x.pin=false}
+    }
+  }
+}
+function rodHeat(x,y,pw,q){
+  for(const rd of rods){
+    const f=Math.pow(3/Math.max(2,rd.dia),1),rate=.06*(pw/240)*Math.pow(3/Math.max(2,rd.dia),2)*(.6+.4*q);
+    for(const l of rd.links){
+      if(!l.on||l.melted)continue;
+      const A=nodes[l.a],B=nodes[l.b],d=Math.hypot((A.x+B.x)/2-x,(A.y+B.y)/2-y);
+      if(d>22)continue;
+      const prox=1-d/22;
+      l.T=Math.min(1700,(l.T||20)+pw*f*prox);l.wq=q;rd.hot=1;
+      if(l.T>700)l.mt=Math.min(1,(l.mt||0)+rate*prox);
+      if(l.mt>0)l.T=Math.max(l.T,1250+300*l.mt);
+    }
+  }
+}
+function rodStep(){
+  for(const rd of rods){
+    if(!rd.hot)continue;
+    let any=false;
+    for(const l of rd.links){
+      if(l.melted||!l.on)continue;
+      let T=l.T||20;
+      if(T<=22&&!(l.mt>0)){l.T=20;continue}
+      any=true;
+      l.T=T+(20-T)*(l.mt>.1?.003:.008);
+      const A=nodes[l.a],B=nodes[l.b];
+      if(T>1250||l.mt>.15){
+        if(T>1250)l.mt=Math.min(1,(l.mt||0)+.045*Math.min(3,(T-1250)/100));
+        l.rk=Math.max(.3,l.rk*(1-.02*l.mt));
+        for(const nd of [A,B]){if(nd.wl.size)nd.pin=false;nd.y+=.12*l.mt}
+        if(Math.random()<.35)spark((A.x+B.x)/2,(A.y+B.y)/2,1,'255,200,110',3,1.8);
+        if(Math.random()<.1)smoke((A.x+B.x)/2,(A.y+B.y)/2,1,'200,200,200');
+        if(l.mt>=1)fuseRod(rd,l);
+      }
+    }
+    if(!any)rd.hot=0;
+  }
+}
+function fuseRod(rd,l){
+  const A=nodes[l.a],B=nodes[l.b],q=l.wq||.7,len=Math.hypot(A.x-B.x,A.y-B.y);
+  l.melted=1;l.o='w';l.k=(.3+.8*q);l.len=Math.max(2,len*.9);l.l0=l.len;l.rk=1;l.T=1400;l.weld=q;
+  const n=Math.max(1,Math.ceil(len/3)),w=Math.min(14,Math.max(4,rd.dia*PXMM*.95));
+  for(let i=0;i<=n;i++){
+    const t=i/n,x=A.x+(B.x-A.x)*t,y=A.y+(B.y-A.y)*t,pi=nearestNode(x,y);
+    beads.push(Object.assign(anchor(x,y),{w:w*(.8+.4*Math.sin(i*1.7)),q,f:fN,pr:'M',a:Math.atan2(B.y-A.y,B.x-A.x)}));
+  }
+  // make sure both ends of the molten metal are fused into the sheet
+  for(const nd of [A,B]){
+    if(!nd.wl.size){
+      const si=nearestNode(nd.x,nd.y);let best=-1,bd=40;
+      const ci=si%cols,cj=Math.floor(si/cols);
+      for(let dj=-2;dj<=2;dj++)for(let di=-2;di<=2;di++){const ii=ci+di,jj=cj+dj;if(ii<0||jj<0||ii>=cols||jj>=rows)continue;const k=jj*cols+ii,sn=nodes[k];if(!sn.adj.some(z=>z.on&&z.o!='w'&&z.o!='r'))continue;const dd=Math.hypot(sn.x-nd.x,sn.y-nd.y);if(dd<bd){bd=dd;best=k}}
+      if(best>=0){nd.wl.add(best);const lk=addLink(nd.idx,best,'w',.3+.8*q);lk.weld=q;lk.T=1400}
+    }
+    nd.pin=false;
+  }
+  spark((A.x+B.x)/2,(A.y+B.y)/2,6,'255,240,200',4,2.4);
+  if(rd.links.every(z=>z.melted))hint('Rod fully melted into the weld: the seam is now weld metal.');
+}
+function finishRod(){
+  if(rodCur&&rodCur.nodes.length<2){for(const n of rodCur.nodes){const i=nodes.indexOf(n);if(i>=0&&i==nodes.length-1)nodes.pop()}rods=rods.filter(r=>r!==rodCur)}
+  rodCur=null;
+}
+function rodTick(){
+  if(mat.n!='Steel'){hint('Filler rods are steel. Use a steel sheet.');return}
+  if(!rodCur){rodCur={nodes:[],links:[],dia:WS.rodDia,welds:0};rods.push(rodCur)}
+  const last=rodCur.nodes[rodCur.nodes.length-1],sp=Math.max(6,cs*1.2);
+  if(!last||Math.hypot(ptr.x-last.x,ptr.y-last.y)>=sp){
+    const used=last?Math.hypot(ptr.x-last.x,ptr.y-last.y):0;
+    if(WS.rodStock<used+1){hint('Out of filler rods. Restock them.');return}
+    const n={x:ptr.x,y:ptr.y,rx:ptr.x,ry:ptr.y,px:ptr.x,py:ptr.y,pin:true,adj:[],rod:true,wl:new Set(),rd:rodCur};
+    nodes.push(n);n.idx=nodes.length-1;rodCur.nodes.push(n);WS.rodStock-=used;
+    if(last)rodCur.links.push(addLink(last.idx,n.idx,'r',1,rodCur.dia<=3?2:rodCur.dia<=5?3.5:6));
+    toolLoad=1;
+  }
+}
+function oxyCut(l,d,mx,my){
+  if(!l.on||TORCH.gas<=0)return;
+  if(!FUEL[TORCH.fuel].oxy){hint('Cutting oxygen needs an oxy-fuel torch (oxy-propane or oxy-acetylene).');return}
+  if(mat.n!='Steel'){hint('Oxygen cutting only works on steel.');return}
+  const cap=2+3*TORCH.tip*Math.min(1.2,TORCH.press);
+  if(th>cap){hint('Nozzle too small for '+th.toFixed(1)+' mm: it cuts about '+cap.toFixed(1)+' mm. Use a bigger nozzle.');return}
+  if((l.T||20)<870){hint('Preheat the steel to bright orange (about 870°C) before opening the cutting oxygen.');return}
+  if(d>tool.r*.45)return;
+  l.ox=(l.ox||0)+.08*torchPow()/Math.pow(thf(),.5);
+  l.T=Math.min(1800,(l.T||20)+25);
+  if(Math.random()<.5)spark(mx,my,2,'255,170,70',5,2.4);
+  if(l.ox>=1){cutLink(l,4,'255,150,50',6);emit({k:'b',x:mx,y:my,vx:(Math.random()-.5)*.8,vy:.5,life:1,dec:.02,drag:.99,g:.16,c:'255,170,70',z:2.8})}
+}
+function torchTick(){
+  if(!(down&&tool.n=='Blowtorch'&&toolLoad>0&&TORCH.gas>0))return;
+  TORCH.gas=Math.max(0,TORCH.gas-(.004+.003*TORCH.tip)*TORCH.press*(TORCH.cut?2.2:1));
+  if(TORCH.flame=='carb'&&Math.random()<.2)smoke(ptr.x,ptr.y,1,'20,20,20');
+  if(TORCH.flame=='oxid'&&mat.n=='Steel'&&Math.random()<.3)spark(ptr.x,ptr.y,1,'255,230,170',2.5);
+  if(TORCH.gas<=0)say('Out of gas. Refill the tank.');
+  if(TORCH.gas>0&&rods.length)rodHeat(ptr.x,ptr.y,45*torchPow(),.6);
+}
+function drawBeads(){
+  const wp=down&&tool.n=='Welder'&&toolLoad>0&&mat.n=='Steel';
+  if(!beads.length&&!wp)return;
+  const el=(p,x,y,rx,ry,a)=>{p.moveTo(x+rx*Math.cos(a),y+rx*Math.sin(a));p.ellipse(x,y,rx,ry,a,0,6.283)};
+  const mk=()=>({a:new Path2D(),b:new Path2D(),c:new Path2D()});
+  const bs2=new Path2D(),H={S:mk(),M:mk(),T:mk()},sh=new Path2D(),bg=new Path2D(),bp=new Path2D(),bs=new Path2D(),bd=new Path2D(),br=new Path2D(),rpD=new Path2D(),rpL=new Path2D(),ctr=new Path2D(),sgH=new Path2D(),sgC=new Path2D(),spt=new Path2D(),spH=new Path2D(),pit=new Path2D(),pitR=new Path2D(),und=new Path2D(),hot=[];
+  for(let i=0;i<beads.length;i++){
+    const b=beads[i],bq=bpos(b);if(!bq)continue;
+    const x=bq.x,y=bq.y,age=fN-b.f;
+    if(b.sp){spt.moveTo(x+b.w,y);spt.arc(x,y,b.w,0,6.283);spH.moveTo(x-b.w*.1,y-b.w*.3);spH.arc(x-b.w*.3,y-b.w*.3,b.w*.3,0,6.283);continue}
+    if(b.dr){br.moveTo(x+b.w,y);br.arc(x,y,b.w,0,6.283);continue}
+    if(age<220){hot.push(b,x,y,age);continue}
+    const a=b.a||0,w=b.w,ry=w*.5,rx=Math.max(w*.42,3),ev=((i&1)||(b.hg!==undefined&&b.hg<=.5))?0:1,ca=Math.cos(a),sa=Math.sin(a);
+    if(ev){
+      const h=H[b.pr]||H.S;
+      el(h.a,x,y,rx+w*.95,ry+w*.95,a);el(h.b,x,y,rx+w*.6,ry+w*.6,a);el(h.c,x,y,rx+w*.3,ry+w*.3,a);
+      el(sh,x+1,y+1.6,rx,ry,a);
+    }
+    el(b.slag?((b.sl!==undefined&&b.sl<.5)?bs2:bs):b.dry?bd:b.q>.55?bg:bp,x,y,rx,ry,a);
+    if(!b.slag&&!b.dry&&ev){
+      const cx=x+ca*ry*.35,cy=y+sa*ry*.35,r=ry*.9,a0=a+Math.PI-1.15,a1=a+Math.PI+1.15;
+      rpD.moveTo(cx+Math.cos(a0)*r,cy+Math.sin(a0)*r);rpD.arc(cx,cy,r,a0,a1);
+      rpL.moveTo(cx-.7+Math.cos(a0)*r,cy-.7+Math.sin(a0)*r);rpL.arc(cx-.7,cy-.7,r,a0,a1);
+      ctr.moveTo(x,y);ctr.lineTo(x+ca*3,y+sa*3);
+    }
+    if(b.slag&&ev){sgH.moveTo(x-1,y-1);sgH.lineTo(x+ca*2.5-1,y+sa*2.5-1);if((((x*7+y*13)|0)&3)==0){sgC.moveTo(x,y);sgC.lineTo(x-sa*ry*.8,y+ca*ry*.8)}}
+    if(b.por&&(((x*7+y*13)|0)&3)==0){pit.moveTo(x+1.4,y);pit.arc(x,y,1.4,0,6.283);pitR.moveTo(x+2,y);pitR.arc(x,y,2,0,6.283)}
+    if(b.und&&ev){const nx=-sa,ny=ca,o=ry+.6;und.moveTo(x+nx*o,y+ny*o);und.lineTo(x+nx*o+ca*3,y+ny*o+sa*3);und.moveTo(x-nx*o,y-ny*o);und.lineTo(x-nx*o+ca*3,y-ny*o+sa*3)}
+  }
+  const HC={S:['rgba(30,26,24,.16)','rgba(150,110,60,.18)','rgba(190,150,80,.2)'],M:['rgba(205,170,90,.14)','rgba(130,110,170,.16)','rgba(70,100,200,.18)'],T:['rgba(210,175,90,.16)','rgba(150,80,200,.2)','rgba(60,110,230,.22)']};
+  for(const k in H){const c=HC[k];ctx.fillStyle=c[0];ctx.fill(H[k].a);ctx.fillStyle=c[1];ctx.fill(H[k].b);ctx.fillStyle=c[2];ctx.fill(H[k].c)}
+  ctx.fillStyle='rgba(0,0,0,.28)';ctx.fill(sh);
+  ctx.fillStyle='#6b7480';ctx.fill(bp);ctx.fillStyle='#a3afba';ctx.fill(bg);ctx.fillStyle='#4a3d34';ctx.fill(bs);ctx.fillStyle='#74665a';ctx.fill(bs2);ctx.fillStyle='#b9c2ca';ctx.fill(bd);ctx.fillStyle='#4a5260';ctx.fill(br);
+  ctx.lineCap='round';
+  ctx.strokeStyle='rgba(20,24,30,.55)';ctx.lineWidth=1;ctx.stroke(rpD);
+  ctx.strokeStyle='rgba(255,255,255,.35)';ctx.lineWidth=.9;ctx.stroke(rpL);
+  ctx.strokeStyle='rgba(255,255,255,.18)';ctx.lineWidth=2.4;ctx.stroke(ctr);
+  ctx.strokeStyle='rgba(255,210,170,.3)';ctx.lineWidth=1.4;ctx.stroke(sgH);
+  ctx.strokeStyle='rgba(0,0,0,.5)';ctx.lineWidth=.8;ctx.stroke(sgC);
+  ctx.strokeStyle='rgba(8,10,14,.6)';ctx.lineWidth=1.3;ctx.stroke(und);
+  ctx.fillStyle='#6a5a52';ctx.fill(spt);ctx.fillStyle='rgba(255,255,255,.55)';ctx.fill(spH);
+  ctx.fillStyle='rgba(255,255,255,.22)';ctx.fill(pitR);ctx.fillStyle='#0f1318';ctx.fill(pit);
+  for(let i=0;i<hot.length;i+=4){
+    const b=hot[i],x=hot[i+1],y=hot[i+2],w=b.w;
+    ctx.fillStyle=b.slag?'#4a4038':'#8f9ba6';ctx.beginPath();ctx.ellipse(x,y,Math.max(w*.42,3),w*.5,b.a||0,0,6.283);ctx.fill();
+  }
+  ctx.globalCompositeOperation='lighter';
+  for(let i=0;i<hot.length;i+=4){
+    const b=hot[i],x=hot[i+1],y=hot[i+2],t=1-hot[i+3]/220,w=b.w;
+    ctx.fillStyle='rgba(255,'+Math.round(90+150*t)+','+Math.round(30+120*t*t)+','+(.15+.7*t)+')';
+    ctx.beginPath();ctx.ellipse(x,y,Math.max(w*.42,3)*1.1,w*.55,b.a||0,0,6.283);ctx.fill();
+  }
+  if(wp){
+    const r=7+amps/40,tig=WS.proc=='TIG',g=ctx.createRadialGradient(ptr.x,ptr.y,0,ptr.x,ptr.y,r*2.2);
+    g.addColorStop(0,tig?'rgba(220,235,255,.95)':'rgba(255,250,235,.95)');g.addColorStop(.35,tig?'rgba(120,160,255,.6)':'rgba(255,190,90,.6)');g.addColorStop(1,'rgba(255,100,30,0)');
+    ctx.fillStyle=g;ctx.fillRect(ptr.x-r*2.2,ptr.y-r*2.2,r*4.4,r*4.4);
+  }
+  ctx.globalCompositeOperation='source-over';
+}
+function drawRods(){
+  if(!rods.length)return;
+  ctx.lineCap='round';
+  for(const rd of rods)for(const l of rd.links){
+    if(!l.on||l.melted)continue;
+    const A=nodes[l.a],B=nodes[l.b],w=rd.dia*.9*(1-.45*(l.mt||0));
+    ctx.strokeStyle='#2c3238';ctx.lineWidth=w+2;ctx.beginPath();ctx.moveTo(A.x,A.y);ctx.lineTo(B.x,B.y);ctx.stroke();
+    ctx.strokeStyle='#b7c2cc';ctx.lineWidth=w;ctx.beginPath();ctx.moveTo(A.x,A.y);ctx.lineTo(B.x,B.y);ctx.stroke();
+    ctx.strokeStyle='rgba(255,255,255,.55)';ctx.lineWidth=Math.max(1,w*.25);ctx.beginPath();ctx.moveTo(A.x-.5,A.y-w*.2);ctx.lineTo(B.x-.5,B.y-w*.2);ctx.stroke();
+    if((l.T||20)>420){const hh=Math.min(1,((l.T||20)-420)/900);ctx.globalCompositeOperation='lighter';ctx.strokeStyle='rgba(255,'+(130+110*Math.max(0,hh-.5)*2|0)+','+(40+150*Math.max(0,hh-.6)*2.5|0)+','+(.45+.45*hh)+')';ctx.lineWidth=w;ctx.beginPath();ctx.moveTo(A.x,A.y);ctx.lineTo(B.x,B.y);ctx.stroke();ctx.globalCompositeOperation='source-over'}
+  }
+}
+function drawFlame(){
+  if(!down||tool.n!='Blowtorch'||TORCH.gas<=0)return;
+  const L=14+4*TORCH.tip*TORCH.press,Rr=tool.r*.7,fm=TORCH.flame;
+  ctx.save();ctx.translate(ptr.x,ptr.y);ctx.rotate(-.55);ctx.globalCompositeOperation='lighter';
+  const g=ctx.createRadialGradient(L*.3,0,2,L*.3,0,Rr+L*.5);
+  g.addColorStop(0,fm=='carb'?'rgba(255,200,90,.6)':FUEL[TORCH.fuel].oxy?'rgba(120,170,255,.55)':'rgba(255,175,70,.5)');g.addColorStop(1,'rgba(255,120,40,0)');
+  ctx.fillStyle=g;ctx.beginPath();ctx.ellipse(L*.35,0,L*.85,Rr*.5,0,0,7);ctx.fill();
+  ctx.fillStyle=fm=='oxid'?'rgba(235,245,255,.95)':'rgba(170,215,255,.9)';
+  ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(L*(fm=='oxid'?.5:.7),-4);ctx.lineTo(L*(fm=='oxid'?.5:.7),4);ctx.closePath();ctx.fill();
+  if(fm=='carb'){ctx.fillStyle='rgba(255,210,80,.6)';ctx.beginPath();ctx.moveTo(L*.5,-3);ctx.lineTo(L*1.25,0);ctx.lineTo(L*.5,3);ctx.closePath();ctx.fill()}
+  if(TORCH.cut&&FUEL[TORCH.fuel].oxy){ctx.strokeStyle='rgba(255,255,255,.95)';ctx.lineWidth=2.5;ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(L*1.5,0);ctx.stroke()}
+  ctx.globalCompositeOperation='source-over';
+  ctx.fillStyle='#3a4046';ctx.fillRect(L*.8,-5,L*.5,10);
+  ctx.restore();
+}
+// ----- tool settings row
+function applySaw(){const b=SAWB[GRD.blade],T=TT('Saw');T.p=b.p;T.r=b.r}
+function applyBit(){const b=DRB[GRD.bit],T=TT('Drill');T.p=b.p;T.r=b.r}
+function renderTset(){
+  const box=document.getElementById('tset'),n=tool.n;
+  const sl_=(id,opts,cur)=>'<select id="'+id+'">'+opts.map(o=>{const v=Array.isArray(o)?o[0]:o,lb=Array.isArray(o)?o[1]:o;return '<option value="'+v+'"'+(String(v)==String(cur)?' selected':'')+'>'+lb+'</option>'}).join('')+'</select>';
+  const rg=(id,min,max,val,u)=>'<input type="range" id="'+id+'" min="'+min+'" max="'+max+'" value="'+val+'"> <b id="'+id+'v">'+val+(u||'')+'</b>';
+  let h='';
+  if(n=='Welder'){
+    const st=WS.proc=='Stick';
+    h='<label>Process '+sl_('ts-proc',['Stick','MIG','TIG'],WS.proc)+'</label>'+
+      (st?'<label>Rod '+sl_('ts-cls',Object.keys(ROD),WS.cls)+'</label><label>Dia '+sl_('ts-sd',STICKD,WS.sd)+' mm</label><label>Arc '+sl_('ts-arc',[['short','Short'],['normal','Normal'],['long','Long']],WS.arc)+'</label>':'<label>Filler '+sl_('ts-rod',[1.6,2.4,3.2],WS.rod)+' mm</label>')+
+      (st?'':'<label>Gas '+sl_('ts-gas',[['mix','Ar/CO2 75/25'],['co2','CO2'],['argon','Argon'],['none','None']],WS.gas)+'</label>')+(WS.proc=='MIG'?'<label>Volts '+rg('ts-volt',14,32,WS.volt,' V')+'</label>':'')+'<label>Angle '+sl_('ts-ang',[['drag','Drag'],['push','Push']],WS.ang)+'</label>'+'<label>Current '+rg('ts-amps',20,300,amps,' A')+'</label><span id="ts-fill"></span><button id="ts-reload">'+(st?'New rod':'Reload filler')+'</button><span id="ts-live"></span>';
+  }
+  else if(n=='Filler rod')h='<label>Bar '+sl_('ts-bar',[3,5,8],WS.rodDia)+' mm</label><span id="ts-stock"></span><button id="ts-restock">Restock rods</button><span>Lay rods across a gap, then weld both ends to the sheet.</span>';
+  else if(n=='Blowtorch')h='<label>Fuel '+sl_('ts-fuel',Object.keys(FUEL).map(k=>[k,FUEL[k].n]),TORCH.fuel)+'</label><label>Nozzle '+rg('ts-tip',1,8,TORCH.tip,'')+'</label><label>Flame '+sl_('ts-flame',[['neutral','Neutral'],['carb','Carburizing'],['oxid','Oxidizing']],TORCH.flame)+'</label><label>Flow '+rg('ts-press',50,150,Math.round(TORCH.press*100),'%')+'</label><button id="ts-cutlev">Cut O₂: '+(TORCH.cut?'ON':'off')+'</button><span id="ts-gas"></span><button id="ts-refill">Refill gas</button><span id="ts-live"></span>';
+  else if(n=='Plasma cutter')h='<label>Current '+rg('ts-amps',20,100,amps,' A')+'</label><label>Stand-off '+sl_('ts-stand',[['low','Low'],['normal','Normal'],['high','High']],PL.stand)+'</label><span id="ts-live"></span>';
+  else if(n=='Laser')h='<label>Power '+rg('ts-lp',200,6000,LAS.pw,' W')+'</label><label>Assist gas '+sl_('ts-lg',[['O2','Oxygen'],['N2','Nitrogen'],['air','Air']],LAS.gas)+'</label><span id="ts-live"></span>';
+  else if(n=='Angle grinder')h='<label>Disc '+sl_('ts-disc',Object.keys(DISCS).map(k=>[k,DISCS[k].n]),GRD.disc)+'</label><button id="ts-newdisc">New disc</button><span id="ts-live"></span>';
+  else if(n=='Saw')h='<label>Blade '+sl_('ts-blade',Object.keys(SAWB).map(k=>[k,SAWB[k].n]),GRD.blade)+'</label><span id="ts-live"></span>';
+  else if(n=='Drill')h='<label>Bit '+sl_('ts-bit',Object.keys(DRB).map(k=>[k,DRB[k].n]),GRD.bit)+'</label><span id="ts-live"></span>';
+  box.style.display=h?'':'none';box.innerHTML=h;
+  if(!h)return;
+  const E=id=>document.getElementById(id),on=(id,ev,f)=>{const e=E(id);if(e)e[ev]=f},val=(id,v)=>{const e=E(id+'v');if(e)e.textContent=v};
+  on('ts-proc','onchange',e=>{WS.proc=e.target.value;WS.gas=WS.proc=='TIG'?'argon':'mix';renderTset()});
+  on('ts-gas','onchange',e=>{WS.gas=e.target.value;updTset()});
+  on('ts-volt','oninput',e=>{WS.volt=+e.target.value;val('ts-volt',WS.volt+' V')});
+  on('ts-ang','onchange',e=>{WS.ang=e.target.value;updTset()});
+  on('ts-cutlev','onclick',e=>{TORCH.cut=!TORCH.cut;e.target.textContent='Cut O₂: '+(TORCH.cut?'ON':'off');say(TORCH.cut?'Cutting oxygen open: preheat first':'Cutting oxygen closed');updTset()});
+  on('ts-cls','onchange',e=>{WS.cls=e.target.value;updTset()});
+  on('ts-sd','onchange',e=>{WS.sd=+e.target.value;updTset()});
+  on('ts-arc','onchange',e=>{WS.arc=e.target.value;updTset()});
+  on('ts-rod','onchange',e=>{WS.rod=+e.target.value;updTset()});
+  on('ts-bar','onchange',e=>{WS.rodDia=+e.target.value});
+  on('ts-amps','oninput',e=>{setAmps(+e.target.value);val('ts-amps',amps+' A');recompute();updSafetyBtn();updTset()});
+  on('ts-fuel','onchange',e=>{TORCH.fuel=e.target.value;applyTorch();recompute();updSafetyBtn();updTset()});
+  on('ts-tip','oninput',e=>{TORCH.tip=+e.target.value;val('ts-tip',TORCH.tip);applyTorch();recompute();updSafetyBtn();updTset()});
+  on('ts-flame','onchange',e=>{TORCH.flame=e.target.value;updTset()});
+  on('ts-press','oninput',e=>{TORCH.press=+e.target.value/100;val('ts-press',e.target.value+'%');updTset()});
+  on('ts-stand','onchange',e=>{PL.stand=e.target.value;updTset()});
+  on('ts-lp','oninput',e=>{LAS.pw=+e.target.value;val('ts-lp',LAS.pw+' W');updTset()});
+  on('ts-lg','onchange',e=>{LAS.gas=e.target.value;updTset()});
+  on('ts-reload','onclick',()=>{WS.filler=100;WS.stuck=false;updTset()});
+  on('ts-restock','onclick',()=>{WS.rodStock=900;updTset()});
+  on('ts-refill','onclick',()=>{TORCH.gas=100;updTset()});
+  on('ts-disc','onchange',e=>{GRD.disc=e.target.value;GRD.broken=false;applyDisc();updTset()});
+  on('ts-newdisc','onclick',()=>{GRD.broken=false;say('New disc fitted.');updTset()});
+  on('ts-blade','onchange',e=>{GRD.blade=e.target.value;applySaw();updTset()});
+  on('ts-bit','onchange',e=>{GRD.bit=e.target.value;applyBit();updTset()});
+  updTset();
+}
+function updTset(){
+  const n=tool.n,set=(id,v)=>{const e=document.getElementById(id);if(e&&e.innerHTML!==v)e.innerHTML=v};
+  if(n=='Welder'){
+    const st=WS.proc=='Stick',P=PROC[WS.proc],rc=ROD[WS.cls],ar=rc.amps[WS.sd]||[0,0],dia=st?WS.sd:WS.rod;
+    set('ts-fill',(st?'Rod ':'Filler ')+Math.round(WS.filler)+'%');
+    set('ts-live',down&&toolLoad>0?'<i class="qb"><b style="width:'+Math.round(WS.q*100)+'%;background:'+(WS.q>.7?'#3ec46d':WS.q>.4?'#e8b339':'#e5533d')+'"></b></i> Quality '+Math.round(WS.q*100)+'% · Speed '+WS.v.toFixed(1)+' px/f, ideal '+((.5+amps/120)*P.spd/Math.pow(thf(),.5)).toFixed(1)+' · '+WS.diag:(st?WS.cls+' '+WS.sd+' mm: '+ar[0]+'-'+ar[1]+' A, '+rc.note+'. ':'')+'About '+Math.round(30*th+10)+' A for '+th.toFixed(1)+' mm. One-pass gap limit ~'+(2*dia).toFixed(1)+' mm; wider gaps need built-up edges or a laid rod.');
+  }
+  else if(n=='Filler rod')set('ts-stock','Rods '+Math.round(WS.rodStock/9)+'%');
+  else if(n=='Blowtorch'){const t=flameTemps(),f=FUEL[TORCH.fuel];set('ts-gas','Gas '+Math.round(TORCH.gas)+'%');set('ts-live',f.n+' · inner cone '+t[0]+'°C, outer '+t[1]+'°C · '+th.toFixed(1)+' mm steel can reach about '+torchTmax()+'°C (melts at 1400) · heat '+Math.round(torchPow()*100)+'%'+(f.oxy?' · needs a shade '+reqShadeFor('Blowtorch')+' filter':'')+(TORCH.tip>=5&&th<1?' · nozzle too big for thin sheet':'')+(TORCH.cut?' · cutting O₂ open: preheat to ~870°C, cuts up to '+(2+3*TORCH.tip*Math.min(1.2,TORCH.press)).toFixed(1)+' mm of steel':''))}
+  else if(n=='Plasma cutter'){plasmaCalc();set('ts-live','Cuts up to '+PL.cap.toFixed(1)+' mm at '+amps+' A (sheet '+th.toFixed(1)+' mm) · ideal speed '+PL.vi.toFixed(1)+', yours '+SPD.toFixed(1)+' · '+(PL.dross=='high'?'too fast: rollover dross, the arc lags':PL.dross=='low'?'too slow: dross builds up':'clean cut window')+' · stand-off '+PL.stand)}
+  else if(n=='Laser'){laserCalc();set('ts-live','Cuts about '+LAS.cap.toFixed(1)+' mm of steel at '+LAS.pw+' W with '+LAS.gas+' (sheet '+th.toFixed(1)+' mm). Oxygen cuts mild steel fastest.')}
+  else if(n=='Angle grinder'){const d=DISCS[GRD.disc];set('ts-live',GRD.broken?'Disc broken. Fit a new disc.':d.cutoff?d.n+': cuts on its edge only. Twisting or side load can shatter it.':d.fin?d.n+': smooths beads and dross and strips surface rust; deep rust leaves pitting behind.':'Grinding wheel: grinds weld beads flat quickly and strips rust, but does not cut through. Use a cut-off wheel to cut.')}
+  else if(n=='Saw')set('ts-live',GRD.blade=='wood'?'A wood blade skids on metal.':GRD.blade=='bimetal'?'Bi-metal teeth cut steel slowly.':'Carbide grit cuts hard metal and tile.');
+  else if(n=='Drill')set('ts-live',DRB[GRD.bit].n+': larger bits cut a wider hole and need more power.');
+}
+applyTorch();applyDisc();applySaw();applyBit();
+renderTset();
+BRIEF['Chipping hammer']='Slag flakes off sharp and sometimes still hot. Wear Z87+ safety glasses when chipping, and chip the slag off between passes so it is not trapped in the next bead. Tap or drag along the weld.';
+BRIEF.Welder='Stick rods differ: E6010/E6011 dig deep and cut through rust, E6013 has a soft arc that suits thin sheet and wide gaps, E7018 is strongest but needs a short arc and clean metal, E7024 lays heavy fill. A single pass should bridge about twice the rod diameter. Wider gaps need built-up edges, backing or a laid rod. Chip slag before the next pass. MIG and TIG need shielding gas (Ar/CO2 for MIG, pure argon for TIG) or the bead goes porous. MIG voltage should rise with current; too high gives a flat undercut bead, too low stubs and spatters. Dragging gives deeper penetration, pushing gives a wider, shallower bead.';
+BRIEF.Blowtorch='Oxy-acetylene is the hottest and most focused flame. Oxy-propane has more total heat but is spread out, so it pierces slower. Air-propane cannot melt steel. Carburizing flame carries soot, oxidizing flame is hotter but scales the steel. The cutting-oxygen lever works only on oxy-fuel: preheat steel to bright orange, then open it and the steel burns through, throwing sparks and slag. Bigger nozzles cut thicker plate.';
+BRIEF['Plasma cutter']='About 20 A cuts 3 mm, 40 A about 10 mm and 50 A about 12 mm. Too slow gives dross, too fast makes the arc lag and leaves a rollover bead. Keep the stand-off steady.';
+BRIEF['Angle grinder']='Cut-off wheels are thin and cut on the edge only; twisting them shatters the wheel. Grinding wheels are thick and made for side loads. Flap discs blend, wire wheels strip surface rust, but deep corrosion leaves pits. Check the wheel RPM rating.';
+function loop(ts){
+  try{
+    if(ts){
+      const dt=lastTs?Math.min(100,ts-lastTs):16;lastTs=ts;ema=ema*.92+dt*.08;
+      if(ema>42&&ts-lastQ>4000&&NMAX>2000){NMAX=Math.max(2000,Math.round(NMAX*.7));lastQ=ts;ema=16;if(ripped||beads.length||rods.length||down||HP.size)say('Slow device: press New net for smoother detail');else{build();say('Lowered detail for smoother play')}}
+    }
+    if(freeze>0){freeze--;draw()}
+    else if(panelOpen){draw()}
+    else{
+      const tr=trembleAmt();let sv=null;
+      if(tr>0){sv=[ptr,[...HP.values()].map(h=>[h.p,h.p.x,h.p.y])];ptr={x:ptr.x+(Math.random()-.5)*tr,y:ptr.y+(Math.random()-.5)*tr};for(const h of HP.values()){h.p.x+=(Math.random()-.5)*tr;h.p.y+=(Math.random()-.5)*tr}}
+      useTool();thermal();
+      if(ac){const want=down&&MACH.includes(tool.n)?tool:null;if(want&&(!mach||mach.T!==want))machStart(want);else if(!want&&mach)machStop();updMach(toolLoad)}
+      step();crack();bank+=Math.max(0,ripped-lastR)*(hazOn&&compliant?1.25:1);lastR=ripped;hazardTick();torchTick();rodStep();updHum(limit());draw();upd();
+      if(sv){ptr=sv[0];for(const q of sv[1]){q[0].x=q[1];q[0].y=q[2]}}
+      if(++fN%10==0){updTool();updTset();renderHud();updPPEAudio();if(!document.getElementById('safety').hidden){renderVitals();renderLog()}}
+    }
+  }catch(e){console.error(e)}
+  requestAnimationFrame(loop);
+}
+function pos(e){const r=cv.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}}
+cv.addEventListener('pointerdown',e=>{
+  cv.setPointerCapture(e.pointerId);
+  const p=pos(e);
+  if(!ac)try{ac=new(window.AudioContext||window.webkitAudioContext)()}catch(_){}
+  if(ac&&ac.state=='suspended')ac.resume();
+  if(primId===null){primId=e.pointerId;ptr=p;down=true;prev={x:p.x,y:p.y};if(tool.k=='hit')doHit(ptr);if(tool.k=='grab'||tool.k=='push'||tool.k=='magnet'||tool.k=='patch')toolSnd(tool)}
+  else if(tool.k!='grab')return;
+  if(tool.k=='grab'){
+    let g=nodes.filter(n=>!n.pin&&!n.held&&Math.hypot(n.x-p.x,n.y-p.y)<tool.r);
+    if(!g.length){let bd=cs*1.3,b=null;for(const n of nodes){if(n.pin||n.held)continue;const d=Math.hypot(n.x-p.x,n.y-p.y);if(d<bd){bd=d;b=n}}if(b)g=[b]}
+    g.forEach(n=>{n.held=true;n.hp=p;n.ox=n.x-p.x;n.oy=n.y-p.y});
+    HP.set(e.pointerId,{p,nodes:g});syncDrag();
+  }
+});
+function syncDrag(){const a=[];for(const h of HP.values())for(const n of h.nodes)a.push(n);drag=a.length?a:null}
+cv.addEventListener('pointermove',e=>{const p=pos(e);if(e.pointerId===primId)ptr=p;const h=HP.get(e.pointerId);if(h){h.p.x=p.x;h.p.y=p.y}});
+const rel=()=>{down=false;primId=null;if(mach)machStop();for(const h of HP.values())h.nodes.forEach(n=>n.held=false);HP.clear();drag=null};
+const up=e=>{const h=HP.get(e.pointerId);if(h){h.nodes.forEach(n=>n.held=false);HP.delete(e.pointerId);syncDrag()}if(e.pointerId===primId){down=false;primId=null;if(mach)machStop()}};
+cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);cv.addEventListener('lostpointercapture',up);
+window.addEventListener('blur',rel);if(document.addEventListener)document.addEventListener('visibilitychange',()=>{if(document.hidden)rel()});
+cv.addEventListener('contextmenu',e=>e.preventDefault());
+let rbT;sl.addEventListener('input',()=>{lvl.textContent=S();clearTimeout(rbT);rbT=setTimeout(build,150);const s=S();say(s>95?'Unbreakable? Pull hard.':mat.n)});
+const thl=document.getElementById('thl');
+function thTxt(){thl.textContent='Thickness '+(th<1?th.toFixed(2):th.toFixed(1))+' mm'+(mat.n=='Rope'?' dia':'')}
+document.getElementById('thm').onclick=()=>{th=Math.max(mat.thr[0],th/1.25);thTxt()};
+document.getElementById('thp').onclick=()=>{th=Math.min(mat.thr[1],th*1.25);thTxt()};
+thTxt();
+const coatSel=document.getElementById('coat');
+coatSel.onchange=()=>{coatM=coatSel.value=='None'?null:MATS.find(m=>m.n==coatSel.value);if(coatM&&!mat.sheet)say('Coats need a sheet as the base.');else if(coatM)say(coatM.lb+' over '+(mat.lb||mat.n));build()};
+document.getElementById('mnt').onchange=e=>{mount=e.target.value;build();say(mount=='Frame'?'Clamped on all sides':mount=='Curtain'?'Hanging from the top':'Hanging from the corners')};
+document.getElementById('wnd').onchange=e=>{const i=e.target.selectedIndex;windAmp=[0,.04,.12][i];say(['Calm air','A light breeze','Gale force'][i])};
+function updTool(){
+  updSafetyBtn();
+  const ti=document.getElementById('tinfo'),ub=document.getElementById('upb'),sb=document.getElementById('shp'),has=tool.p!==undefined;
+  ub.style.display=sb.style.display=ti.style.display=has?'':'none';
+  if(!has)return;
+  const lv=tool.lv||0,cost=150*(lv+1);
+  ti.textContent=tool.n+' L'+lv+' · wear '+Math.round((tool.dull||0)*100)+'% · scrap '+Math.round(bank);
+  ub.textContent=lv>=5?'Maxed':'Upgrade '+cost;ub.disabled=lv>=5||bank<cost;
+  sb.textContent=tool.k=='hit'?'Re-grip':MACH.includes(tool.n)?'New disc':'Sharpen';
+}
+document.getElementById('upb').onclick=()=>{const lv=tool.lv||0,cost=150*(lv+1);if(bank>=cost&&lv<5){bank-=cost;tool.lv=lv+1;say(tool.n+' upgraded');updTool()}};
+document.getElementById('shp').onclick=()=>{tool.dull=0;updTool()};
+const mb=document.getElementById('mats');
+MATS.forEach(m=>{const b=document.createElement('button');b.innerHTML='<i class="sw" style="background:rgb('+(m.c||m.pal[1])+')"></i>'+(m.lb||m.n);if(m===mat)b.className='on';
+ b.onclick=()=>{mat=m;th=m.th0;thTxt();build();[...mb.children].forEach(c=>c.className=c===b?'on':'');say((m.lb||m.n)+': '+m.t)};mb.appendChild(b)});
+const tb=document.getElementById('tools');
+TOOLS.forEach(o=>{const b=document.createElement('button');b.textContent=o.n;b.dataset.k=o.k;b.title=(BRIEF[o.n]||'').split('. ')[0];if(o===tool)b.className='on';
+ b.onclick=()=>{rel();tool=o;[...tb.children].forEach(c=>c.className=c===b?'on':'');say(o.n);if(AMPS[o.n])amps=AMPS[o.n];recompute();updTool();renderTset();if(hazOn&&miss.length)say(o.n+': missing '+miss.join(', '))};tb.appendChild(b)});
+document.getElementById('rs').addEventListener('click',build);
+function fitCanvas(){
+  const nw=cv.clientWidth,nh=cv.clientHeight;
+  if(!nw||!nh||(Math.abs(nw-W)<2&&Math.abs(nh-H)<2))return;
+  const sx=nw/W,sy=nh/H;
+  for(const n of nodes){n.x*=sx;n.y*=sy;n.px*=sx;n.py*=sy;n.rx*=sx;n.ry*=sy}
+  for(const l of links){const f=l.o=='h'?sx:l.o=='v'?sy:(sx+sy)/2;l.len*=f;l.l0*=f}
+  for(const b of beads){b.dx*=sx;b.dy*=sy}
+  gnx*=sx;gny*=sy;gm*=(sx+sy)/2;parts.length=0;
+  W=nw;H=nh;cv.width=W*dpr;cv.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);
+}
+let rzR=0;
+try{new ResizeObserver(()=>{cancelAnimationFrame(rzR);rzR=requestAnimationFrame(fitCanvas)}).observe(document.getElementById('stage'))}catch(_){window.addEventListener('resize',()=>requestAnimationFrame(fitCanvas))}
+try{build();loop()}catch(e){var d=document.getElementById('err');if(d){d.style.display='block';d.textContent='Startup failed: '+e.message}throw e}
+setTimeout(()=>say('Drag the net to pull it. Pick a tool or material above.'),400);
+</script>
+</body>
+</html>
